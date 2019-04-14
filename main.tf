@@ -12,7 +12,7 @@ data "aws_ami" "freebsd_11" {
     name = "name"
 
     values = [
-      "FreeBSD 12.0-STABLE-amd64*",
+      "FreeBSD 11.1-STABLE-amd64*",
     ]
   }
 }
