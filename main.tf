@@ -2,6 +2,15 @@ provider "aws" {
   region = "us-east-1"
 }
 
+resource "aws_vpc_peering_connection" "default" {
+  vpc_id      = "${aws_vpc.10_1_0_0.id}"
+  peer_vpc_id = "${aws_vpc.10_2_0_0.id}"
+}
+
+resource "aws_vpc_peering_connection_accepter" "default" {
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
+  auto_accept               = true
+}
 
 data "aws_ami" "freebsd_11" {
   most_recent = true
@@ -14,33 +23,5 @@ data "aws_ami" "freebsd_11" {
     values = [
       "FreeBSD 11.1-STABLE-amd64*",
     ]
-  }
-}
-
-resource "aws_instance" "jumphost" {
-  ami                    = "${data.aws_ami.freebsd_11.image_id}"
-  instance_type          = "t2.small"
-  subnet_id              = "${aws_subnet.10_1_0_0_public1.id}"
-  vpc_security_group_ids = [
-    "${aws_security_group.10_1_0_0_allow_22.id}",
-    "${aws_security_group.10_1_0_0_allow_vpc.id}",
-    "${aws_security_group.10_1_0_0_allow_egress.id}"
-  ]
-  key_name               = "${var.key_name}"
-
-
-
-  user_data = <<EOF
-#!/usr/bin/env sh
-
-export ASSUME_ALWAYS_YES=YES
-
-pkg update -y
-pkg install -y bash
-chsh -s /usr/local/bin/bash ec2-user
-EOF
-
-  tags {
-    Name = "jumphost"
   }
 }

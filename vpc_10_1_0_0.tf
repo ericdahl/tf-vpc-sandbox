@@ -7,7 +7,7 @@ resource "aws_vpc" "10_1_0_0" {
 }
 
 resource "aws_subnet" "10_1_0_0_public1" {
-  vpc_id                  = "${aws_vpc.10_1_0_0.id}"
+  vpc_id = "${aws_vpc.10_1_0_0.id}"
 
   cidr_block              = "10.1.1.0/24"
   availability_zone       = "us-east-1a"
@@ -57,13 +57,18 @@ resource "aws_route_table" "10_1_0_0_public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.10_1_0_0.id}"
   }
+
+  route {
+    cidr_block = "10.2.0.0/16"
+    gateway_id = "${aws_vpc_peering_connection.default.id}"
+  }
 }
 
 resource "aws_route_table" "10_1_0_0_private" {
   vpc_id = "${aws_vpc.10_1_0_0.id}"
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = "${aws_nat_gateway.10_1_0_0_default.id}"
   }
 }
@@ -152,3 +157,39 @@ resource "aws_security_group_rule" "10_1_0_0_allow_vpc" {
   cidr_blocks       = ["${aws_vpc.10_1_0_0.cidr_block}"]
 }
 
+resource "aws_security_group_rule" "10_1_0_0_allow_vpc_peer" {
+  security_group_id = "${aws_security_group.10_1_0_0_allow_vpc.id}"
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["${aws_vpc.10_2_0_0.cidr_block}"]
+}
+
+resource "aws_instance" "10_1_0_0_jumphost" {
+  ami           = "${data.aws_ami.freebsd_11.image_id}"
+  instance_type = "t2.small"
+  subnet_id     = "${aws_subnet.10_1_0_0_public1.id}"
+
+  vpc_security_group_ids = [
+    "${aws_security_group.10_1_0_0_allow_22.id}",
+    "${aws_security_group.10_1_0_0_allow_vpc.id}",
+    "${aws_security_group.10_1_0_0_allow_egress.id}",
+  ]
+
+  key_name = "${var.key_name}"
+
+  user_data = <<EOF
+#!/usr/bin/env sh
+
+export ASSUME_ALWAYS_YES=YES
+
+pkg update -y
+pkg install -y bash
+chsh -s /usr/local/bin/bash ec2-user
+EOF
+
+  tags {
+    Name = "10_1_0_0_jumphost"
+  }
+}
