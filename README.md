@@ -2,6 +2,6 @@
 
 A sandbox testing out various VPC configurations
 
-- VPC peering
+- [VPC peering](vpc-peering)
 - PrivateLink
-- Transit Gateway
+- [Transit Gateway](transit-gateway)
