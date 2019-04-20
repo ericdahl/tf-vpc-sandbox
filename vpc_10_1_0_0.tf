@@ -59,8 +59,8 @@ resource "aws_route_table" "10_1_0_0_public" {
   }
 
   route {
-    cidr_block = "10.2.0.0/16"
-    gateway_id = "${aws_vpc_peering_connection.default.id}"
+    cidr_block                = "10.2.0.0/16"
+    vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
   }
 }
 
