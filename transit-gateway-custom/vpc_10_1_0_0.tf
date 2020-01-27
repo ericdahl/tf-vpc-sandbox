@@ -71,6 +71,11 @@ resource "aws_route_table" "10_1_0_0_private" {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = "${aws_nat_gateway.10_1_0_0_default.id}"
   }
+
+  route {
+    cidr_block         = "10.0.0.0/8"
+    transit_gateway_id = "${aws_ec2_transit_gateway.default.id}"
+  }
 }
 
 resource "aws_route_table_association" "10_1_0_0_sub1" {
@@ -163,7 +168,7 @@ resource "aws_security_group_rule" "10_1_0_0_allow_vpc_peer" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["10.0.0.0/8"]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "10_1_0_0" {

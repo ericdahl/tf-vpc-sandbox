@@ -58,10 +58,10 @@ resource "aws_route_table" "10_2_0_0_public" {
     gateway_id = "${aws_internet_gateway.10_2_0_0.id}"
   }
 
-//  route {
-//    cidr_block         = "10.0.0.0/8"
-//    transit_gateway_id = "${aws_ec2_transit_gateway.default.id}"
-//  }
+  route {
+    cidr_block         = "10.0.0.0/8"
+    transit_gateway_id = "${aws_ec2_transit_gateway.default.id}"
+  }
 }
 
 resource "aws_route_table" "10_2_0_0_private" {
@@ -70,6 +70,11 @@ resource "aws_route_table" "10_2_0_0_private" {
   route {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = "${aws_nat_gateway.10_2_0_0_default.id}"
+  }
+
+  route {
+    cidr_block         = "10.0.0.0/8"
+    transit_gateway_id = "${aws_ec2_transit_gateway.default.id}"
   }
 }
 
@@ -163,19 +168,26 @@ resource "aws_security_group_rule" "10_2_0_0_allow_vpc_peer" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["${aws_vpc.10_1_0_0.cidr_block}"]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
-//resource "aws_ec2_transit_gateway_vpc_attachment" "10_2_0_0" {
-//  vpc_id             = "${aws_vpc.10_2_0_0.id}"
-//  transit_gateway_id = "${aws_ec2_transit_gateway.default.id}"
-//
-//  subnet_ids = [
-//    "${aws_subnet.10_2_0_0_private1.id}",
-//    "${aws_subnet.10_2_0_0_private2.id}",
-//    "${aws_subnet.10_2_0_0_private3.id}",
-//  ]
-//}
+resource "aws_ec2_transit_gateway_vpc_attachment" "10_2_0_0" {
+  vpc_id             = "${aws_vpc.10_2_0_0.id}"
+  transit_gateway_id = "${aws_ec2_transit_gateway.default.id}"
+
+  subnet_ids = [
+    "${aws_subnet.10_2_0_0_private1.id}",
+    "${aws_subnet.10_2_0_0_private2.id}",
+    "${aws_subnet.10_2_0_0_private3.id}",
+  ]
+
+  transit_gateway_default_route_table_association = false
+  transit_gateway_default_route_table_propagation = false
+
+  tags {
+    Name = "10.2.0.0/16"
+  }
+}
 
 resource "aws_instance" "10_2_0_0_jumphost" {
   ami           = "${data.aws_ami.freebsd_11.image_id}"
