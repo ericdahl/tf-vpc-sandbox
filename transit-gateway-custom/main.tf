@@ -2,10 +2,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-
-
-
-
 data "aws_ami" "freebsd_11" {
   most_recent = true
 
