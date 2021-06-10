@@ -223,15 +223,45 @@ resource "aws_lb_target_group_attachment" "nlb" {
   port             = 80
 }
 
+# note: race condition
+data "aws_network_interface" "lb" {
+  for_each = aws_lb.nlb.subnets
+
+  filter {
+    name   = "description"
+    values = ["ELB ${aws_lb.nlb.arn_suffix}"]
+  }
+
+  filter {
+    name   = "subnet-id"
+    values = [each.value]
+  }
+
+  depends_on = [aws_lb.nlb]
+}
+
+# This is an extremely locked down SG for demo purposes
+resource "aws_security_group" "webserver" {
+  vpc_id = aws_vpc.vpc_10_1_0_0.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = formatlist("%s/32", [for eni in data.aws_network_interface.lb : eni.private_ip])
+    description = "Allow connection from NLB"
+  }
+}
+
+
 resource "aws_instance" "webserver_10_1_0_0" {
   ami           = data.aws_ami.freebsd_11.image_id
   instance_type = "t2.small"
   subnet_id     = aws_subnet.private1_10_1_0_0.id
 
   vpc_security_group_ids = [
-    aws_security_group.allow_22_10_1_0_0.id,
-    aws_security_group.allow_vpc_10_1_0_0.id,
-    aws_security_group.allow_egress_10_1_0_0.id,
+//    aws_security_group.allow_vpc_10_1_0_0.id,
+    aws_security_group.webserver.id
   ]
 
   key_name = aws_key_pair.default.key_name
@@ -255,59 +285,6 @@ EOF
     Name = "10_1_0_0_webserver"
   }
 }
-//
-//resource "aws_autoscaling_group" "default" {
-//
-//  name = "webserver"
-//
-//  max_size = 10
-//  min_size = 10
-//
-//  launch_template {
-//    id = aws_launch_template.webserver.id
-//    version = aws_launch_template.webserver.latest_version
-//  }
-//
-//  vpc_zone_identifier = [
-//    aws_subnet.private1_10_1_0_0.id,
-//    aws_subnet.private2_10_1_0_0.id,
-//    aws_subnet.private3_10_1_0_0.id,
-//  ]
-//
-//  target_group_arns = [aws_lb_target_group.nlb_tg.arn]
-//
-////  tags = {
-////    Name = "webserver"
-////  }
-//}
-//
-//data "aws_ssm_parameter" "amazon_linux_2" {
-//  name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
-//}
-//
-//resource "aws_launch_template" "webserver" {
-//
-//  instance_type = "t3.small"
-//
-//  image_id = data.aws_ssm_parameter.amazon_linux_2.value
-//
-//  vpc_security_group_ids = [
-//        aws_security_group.allow_22_10_1_0_0.id,
-//    aws_security_group.allow_vpc_10_1_0_0.id,
-//    aws_security_group.allow_egress_10_1_0_0.id,
-//  ]
-//
-//  user_data = "${base64encode(<<EOF
-//#!/usr/bin/env sh
-//
-//amazon-linux-extras install -y nginx1
-//
-//service nginx start
-//EOF
-//)}"
-//
-//
-//}
 
 resource "aws_flow_log" "flow_log_10_1_0_0" {
   log_destination      = aws_s3_bucket.flow_logs.arn
