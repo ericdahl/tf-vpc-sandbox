@@ -15,3 +15,4 @@ data "aws_ami" "freebsd_11" {
     ]
   }
 }
+
