@@ -16,3 +16,7 @@ data "aws_ami" "freebsd_11" {
   }
 }
 
+
+resource "aws_key_pair" "default" {
+  public_key = var.key_pair_public
+}

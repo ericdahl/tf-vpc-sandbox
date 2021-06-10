@@ -166,7 +166,7 @@ resource "aws_instance" "jumphost_10_2_0_0_jumphost" {
     aws_security_group.allow_egress_10_2_0_0.id,
   ]
 
-  key_name = var.key_name
+  key_name = aws_key_pair.default.key_name
 
   user_data = <<EOF
 #!/usr/bin/env sh
