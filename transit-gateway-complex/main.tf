@@ -1,5 +1,11 @@
 provider "aws" {
   region = "us-east-1"
+
+  default_tags {
+    tags = {
+      Name = "transit-gateway-complex"
+    }
+  }
 }
 
 data "aws_ssm_parameter" "amazon_linux_2" {

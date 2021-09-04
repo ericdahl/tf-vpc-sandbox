@@ -189,6 +189,24 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "r10_1_0_0" {
   }
 }
 
+resource "aws_ec2_transit_gateway_vpc_attachment" "r10_1_0_0_secondary" {
+  vpc_id             = aws_vpc.r10_1_0_0.id
+  transit_gateway_id = aws_ec2_transit_gateway.secondary.id
+
+  subnet_ids = [
+    aws_subnet.r10_1_0_0_private1.id,
+    aws_subnet.r10_1_0_0_private2.id,
+    aws_subnet.r10_1_0_0_private3.id,
+  ]
+
+  transit_gateway_default_route_table_association = false
+  transit_gateway_default_route_table_propagation = false
+
+  tags = {
+    Name = "10.1.0.0/16"
+  }
+}
+
 resource "aws_instance" "r10_1_0_0_jumphost" {
   ami           = data.aws_ssm_parameter.amazon_linux_2.value
   instance_type = "t2.small"

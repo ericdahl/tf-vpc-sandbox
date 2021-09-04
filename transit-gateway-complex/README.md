@@ -2,6 +2,11 @@
 
 sample illustrating connecting five VPCs with a Transit Gateway
 
+- VPC 1-* VPC Attachment
+- TGW TGW Attachment 1-1 TGW Route Table association
+- 
+
+
 This example:
 - creates five VPCs, with CIDRs: 10.1./16 ... 10.5/16
 - creates a transit gateway with default route table off
