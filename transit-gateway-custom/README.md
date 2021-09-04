@@ -1,4 +1,4 @@
-# transit-gateway-custom
+# transit-gateway-complex
 
 sample illustrating connecting five VPCs with a Transit Gateway
 

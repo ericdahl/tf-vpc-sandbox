@@ -6,3 +6,4 @@ resource "aws_ec2_transit_gateway" "default" {
     Name = "transit-gateway-custom"
   }
 }
+
