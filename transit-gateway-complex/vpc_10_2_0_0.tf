@@ -190,7 +190,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "r10_2_0_0" {
 }
 
 resource "aws_instance" "r10_2_0_0_jumphost" {
-  ami           = data.aws_ami.freebsd_11.image_id
+  ami           = data.aws_ssm_parameter.amazon_linux_2.value
   instance_type = "t2.small"
   subnet_id     = aws_subnet.r10_2_0_0_public1.id
 
@@ -200,18 +200,7 @@ resource "aws_instance" "r10_2_0_0_jumphost" {
     aws_security_group.r10_2_0_0_allow_egress.id,
   ]
 
-  key_name = var.key_name
-
-  user_data = <<EOF
-#!/usr/bin/env sh
-
-export ASSUME_ALWAYS_YES=YES
-
-pkg update -y
-pkg install -y bash
-chsh -s /usr/local/bin/bash ec2-user
-EOF
-
+  key_name = aws_key_pair.default.key_name
 
   tags = {
     Name = "10_2_0_0_jumphost"

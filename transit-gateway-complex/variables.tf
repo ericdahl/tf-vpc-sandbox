@@ -2,6 +2,5 @@ variable "admin_ip_cidr" {
   default = "0.0.0.0/0"
 }
 
-variable "key_name" {
-}
+variable "public_key" {}
 
