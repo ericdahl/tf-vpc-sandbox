@@ -2,16 +2,13 @@
 
 Sample of many VPCs sharing NAT Gateway(s) in a centralized way with TGW
 
-
-
-
 This example:
 
 - creates two standard VPCs (10.1, 10.2)
     - attached to TGW
     - default route to TGW
     - has IGWs
-      - for cost savings, no need to go over TGW for public subnets
+        - TODO: consider centralizing IGWs if possible
 - creates central VPC (10.111)
     - has NAT GWs
 - TGW
