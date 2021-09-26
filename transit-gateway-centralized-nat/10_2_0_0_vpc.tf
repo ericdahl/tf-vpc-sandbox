@@ -62,19 +62,22 @@ resource "aws_route_table" "r10_2_0_0_public" {
     cidr_block = "10.0.0.0/8"
     transit_gateway_id = aws_ec2_transit_gateway.default.id
   }
+
+  tags = {
+    Name = "r10_2_0_0_public"
+  }
 }
 
 resource "aws_route_table" "r10_2_0_0_private" {
   vpc_id = aws_vpc.r10_2_0_0.id
 
-//  route {
-//    cidr_block     = "0.0.0.0/0"
-//    nat_gateway_id = aws_nat_gateway.r10_2_0_0_default.id
-//  }
-
   route {
     cidr_block         = "0.0.0.0/0"
     transit_gateway_id = aws_ec2_transit_gateway.default.id
+  }
+
+  tags = {
+    Name = "r10_2_0_0_private"
   }
 }
 
@@ -108,15 +111,6 @@ resource "aws_route_table_association" "r10_2_0_0_private_sub3" {
   subnet_id      = aws_subnet.r10_2_0_0_private3.id
 }
 
-//resource "aws_eip" "r10_2_0_0_nat_gateway" {
-//  vpc        = true
-//  depends_on = [aws_internet_gateway.r10_2_0_0]
-//}
-//
-//resource "aws_nat_gateway" "r10_2_0_0_default" {
-//  allocation_id = aws_eip.r10_2_0_0_nat_gateway.id
-//  subnet_id     = aws_subnet.r10_2_0_0_public1.id
-//}
 
 #### Security Groups
 
@@ -189,21 +183,4 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "r10_2_0_0" {
   }
 }
 
-resource "aws_instance" "r10_2_0_0_jumphost" {
-  ami           = data.aws_ssm_parameter.amazon_linux_2.value
-  instance_type = "t2.small"
-  subnet_id     = aws_subnet.r10_2_0_0_public1.id
-
-  vpc_security_group_ids = [
-    aws_security_group.r10_2_0_0_allow_22.id,
-    aws_security_group.r10_2_0_0_allow_vpc.id,
-    aws_security_group.r10_2_0_0_allow_egress.id,
-  ]
-
-  key_name = aws_key_pair.default.key_name
-
-  tags = {
-    Name = "10_2_0_0_jumphost"
-  }
-}
 

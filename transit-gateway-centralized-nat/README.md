@@ -10,6 +10,8 @@ This example:
 - creates two standard VPCs (10.1, 10.2)
     - attached to TGW
     - default route to TGW
+    - has IGWs
+      - for cost savings, no need to go over TGW for public subnets
 - creates central VPC (10.111)
     - has NAT GWs
 - TGW
