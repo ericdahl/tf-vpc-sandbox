@@ -59,7 +59,7 @@ resource "aws_route_table" "r10_1_0_0_public" {
   }
 
   route {
-    cidr_block         = "10.0.0.0/8"
+    cidr_block = "10.0.0.0/8"
     transit_gateway_id = aws_ec2_transit_gateway.default.id
   }
 }
@@ -67,13 +67,13 @@ resource "aws_route_table" "r10_1_0_0_public" {
 resource "aws_route_table" "r10_1_0_0_private" {
   vpc_id = aws_vpc.r10_1_0_0.id
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.r10_1_0_0_default.id
-  }
+//  route {
+//    cidr_block     = "0.0.0.0/0"
+//    nat_gateway_id = aws_nat_gateway.r10_1_0_0_default.id
+//  }
 
   route {
-    cidr_block         = "10.0.0.0/8"
+    cidr_block = "0.0.0.0/0"
     transit_gateway_id = aws_ec2_transit_gateway.default.id
   }
 }
@@ -108,15 +108,6 @@ resource "aws_route_table_association" "r10_1_0_0_private_sub3" {
   subnet_id      = aws_subnet.r10_1_0_0_private3.id
 }
 
-resource "aws_eip" "r10_1_0_0_nat_gateway" {
-  vpc        = true
-  depends_on = [aws_internet_gateway.r10_1_0_0]
-}
-
-resource "aws_nat_gateway" "r10_1_0_0_default" {
-  allocation_id = aws_eip.r10_1_0_0_nat_gateway.id
-  subnet_id     = aws_subnet.r10_1_0_0_public1.id
-}
 
 #### Security Groups
 
@@ -189,24 +180,6 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "r10_1_0_0" {
   }
 }
 
-resource "aws_ec2_transit_gateway_vpc_attachment" "r10_1_0_0_secondary" {
-  vpc_id             = aws_vpc.r10_1_0_0.id
-  transit_gateway_id = aws_ec2_transit_gateway.secondary.id
-
-  subnet_ids = [
-    aws_subnet.r10_1_0_0_private1.id,
-    aws_subnet.r10_1_0_0_private2.id,
-    aws_subnet.r10_1_0_0_private3.id,
-  ]
-
-  transit_gateway_default_route_table_association = false
-  transit_gateway_default_route_table_propagation = false
-
-  tags = {
-    Name = "10.1.0.0/16"
-  }
-}
-
 resource "aws_instance" "r10_1_0_0_jumphost" {
   ami           = data.aws_ssm_parameter.amazon_linux_2.value
   instance_type = "t2.small"
@@ -225,3 +198,45 @@ resource "aws_instance" "r10_1_0_0_jumphost" {
   }
 }
 
+resource "aws_security_group" "internal_10_1_0_0" {
+  vpc_id = aws_vpc.r10_1_0_0.id
+  name = "internal_10_1_0_0"
+}
+
+resource "aws_security_group_rule" "internal_10_1_0_0_egress" {
+  security_group_id = aws_security_group.internal_10_1_0_0.id
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "internal_10_1_0_0_ingress" {
+  security_group_id = aws_security_group.internal_10_1_0_0.id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = [aws_vpc.r10_1_0_0.cidr_block]
+}
+
+resource "aws_instance" "r10_1_0_0_internal" {
+  ami           = data.aws_ssm_parameter.amazon_linux_2.value
+  instance_type = "t2.small"
+  subnet_id     = aws_subnet.r10_1_0_0_private1.id
+
+  vpc_security_group_ids = [
+    aws_security_group.internal_10_1_0_0.id
+  ]
+
+  key_name = aws_key_pair.default.key_name
+
+  tags = {
+    Name = "10_1_0_0_internal"
+  }
+}
+
+output "r10_1_0_0_internal_private_ip" {
+  value = aws_instance.r10_1_0_0_internal.private_ip
+}

@@ -3,7 +3,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Name = "transit-gateway-complex"
+      Name = "transit-gateway-centralized-nat"
     }
   }
 }
