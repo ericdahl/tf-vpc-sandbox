@@ -111,60 +111,6 @@ resource "aws_route_table_association" "r10_1_0_0_private_sub3" {
   subnet_id      = aws_subnet.r10_1_0_0_private3.id
 }
 
-
-#### Security Groups
-
-resource "aws_security_group" "r10_1_0_0_allow_egress" {
-  vpc_id = aws_vpc.r10_1_0_0.id
-  name   = "allow_egress"
-}
-
-resource "aws_security_group_rule" "r10_1_0_0_allow_egress" {
-  security_group_id = aws_security_group.r10_1_0_0_allow_egress.id
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
-resource "aws_security_group" "r10_1_0_0_allow_22" {
-  vpc_id = aws_vpc.r10_1_0_0.id
-  name   = "10_1_0_0_allow_22"
-}
-
-resource "aws_security_group_rule" "r10_1_0_0_allow_22" {
-  security_group_id = aws_security_group.r10_1_0_0_allow_22.id
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = [var.admin_ip_cidr]
-}
-
-resource "aws_security_group" "r10_1_0_0_allow_vpc" {
-  vpc_id = aws_vpc.r10_1_0_0.id
-  name   = "allow_vpc"
-}
-
-resource "aws_security_group_rule" "r10_1_0_0_allow_vpc" {
-  security_group_id = aws_security_group.r10_1_0_0_allow_vpc.id
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = [aws_vpc.r10_1_0_0.cidr_block]
-}
-
-resource "aws_security_group_rule" "r10_1_0_0_allow_vpc_peer" {
-  security_group_id = aws_security_group.r10_1_0_0_allow_vpc.id
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
 resource "aws_ec2_transit_gateway_vpc_attachment" "r10_1_0_0" {
   vpc_id             = aws_vpc.r10_1_0_0.id
   transit_gateway_id = aws_ec2_transit_gateway.default.id
