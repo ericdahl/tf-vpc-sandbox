@@ -58,12 +58,6 @@ resource "aws_route_table" "r10_111_0_0_public" {
     gateway_id = aws_internet_gateway.r10_111_0_0.id
   }
 
-//  route {
-//    cidr_block = aws_vpc.r10_1_0_0.cidr_block
-//    c
-//    gateway_id = aws_ec2_transit_gateway.default.id
-//  }
-
   route {
     cidr_block = "10.0.0.0/8"
     transit_gateway_id = aws_ec2_transit_gateway.default.id
@@ -124,58 +118,6 @@ resource "aws_nat_gateway" "r10_111_0_0_default" {
   subnet_id     = aws_subnet.r10_111_0_0_public1.id
 }
 
-#### Security Groups
-
-resource "aws_security_group" "r10_111_0_0_allow_egress" {
-  vpc_id = aws_vpc.r10_111_0_0.id
-  name   = "allow_egress"
-}
-
-resource "aws_security_group_rule" "r10_111_0_0_allow_egress" {
-  security_group_id = aws_security_group.r10_111_0_0_allow_egress.id
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
-resource "aws_security_group" "r10_111_0_0_allow_22" {
-  vpc_id = aws_vpc.r10_111_0_0.id
-  name   = "10_111_0_0_allow_22"
-}
-
-resource "aws_security_group_rule" "r10_111_0_0_allow_22" {
-  security_group_id = aws_security_group.r10_111_0_0_allow_22.id
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = [var.admin_ip_cidr]
-}
-
-resource "aws_security_group" "r10_111_0_0_allow_vpc" {
-  vpc_id = aws_vpc.r10_111_0_0.id
-  name   = "allow_vpc"
-}
-
-resource "aws_security_group_rule" "r10_111_0_0_allow_vpc" {
-  security_group_id = aws_security_group.r10_111_0_0_allow_vpc.id
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = [aws_vpc.r10_111_0_0.cidr_block]
-}
-
-resource "aws_security_group_rule" "r10_111_0_0_allow_vpc_peer" {
-  security_group_id = aws_security_group.r10_111_0_0_allow_vpc.id
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "r10_111_0_0" {
   vpc_id             = aws_vpc.r10_111_0_0.id
@@ -194,22 +136,3 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "r10_111_0_0" {
     Name = "10.111.0.0/16"
   }
 }
-
-resource "aws_instance" "r10_111_0_0_jumphost" {
-  ami           = data.aws_ssm_parameter.amazon_linux_2.value
-  instance_type = "t2.small"
-  subnet_id     = aws_subnet.r10_111_0_0_public1.id
-
-  vpc_security_group_ids = [
-    aws_security_group.r10_111_0_0_allow_22.id,
-    aws_security_group.r10_111_0_0_allow_vpc.id,
-    aws_security_group.r10_111_0_0_allow_egress.id,
-  ]
-
-  key_name = aws_key_pair.default.key_name
-
-  tags = {
-    Name = "10_111_0_0_jumphost"
-  }
-}
-
