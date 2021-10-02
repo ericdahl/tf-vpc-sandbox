@@ -6,6 +6,7 @@ resource "aws_ec2_transit_gateway_route_table" "dev" {
   }
 }
 
+# Possible configuration to bypass central FW for "dev" zone
 //resource "aws_ec2_transit_gateway_route_table_propagation" "dev" {
 //  for_each = {
 //    "vpc_10.1.0.0" : aws_ec2_transit_gateway_vpc_attachment.r10_1_0_0

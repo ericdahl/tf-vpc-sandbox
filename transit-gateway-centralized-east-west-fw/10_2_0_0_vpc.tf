@@ -76,8 +76,6 @@ resource "aws_route_table" "r10_2_0_0_private" {
     transit_gateway_id = aws_ec2_transit_gateway.default.id
   }
 
-  // TODO: route to pfsense ENI here
-
   tags = {
     Name = "r10_2_0_0_private"
   }

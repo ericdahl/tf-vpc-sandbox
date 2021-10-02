@@ -21,6 +21,15 @@ resource "aws_security_group_rule" "internal_10_1_0_0_ingress" {
   cidr_blocks       = [aws_vpc.r10_1_0_0.cidr_block]
 }
 
+resource "aws_security_group_rule" "internal_10_1_0_0_ingress_rfc" {
+  security_group_id = aws_security_group.internal_10_1_0_0.id
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["10.0.0.0/8"]
+}
+
 resource "aws_instance" "r10_1_0_0_internal" {
   ami           = data.aws_ssm_parameter.amazon_linux_2.value
   instance_type = "t2.small"
