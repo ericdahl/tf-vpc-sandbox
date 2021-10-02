@@ -9,7 +9,7 @@ provider "aws" {
 }
 
 data "aws_ssm_parameter" "amazon_linux_2" {
-  name = "/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2"
+  name = "/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2" # TODO: AL2
 }
 
 resource "aws_key_pair" "default" {
