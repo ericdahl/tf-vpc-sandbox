@@ -1,5 +1,3 @@
-
-
 resource "aws_security_group" "internal_10_1_0_0" {
   vpc_id = aws_vpc.r10_1_0_0.id
   name   = "internal_10_1_0_0"

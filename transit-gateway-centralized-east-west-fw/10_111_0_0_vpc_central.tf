@@ -46,6 +46,24 @@ resource "aws_subnet" "r10_111_0_0_private3" {
   availability_zone = "us-east-1c"
 }
 
+resource "aws_subnet" "r10_111_0_0_private1_tgw" {
+  vpc_id            = aws_vpc.vpc_10_111_0_0.id
+  cidr_block        = "10.111.220.0/24"
+  availability_zone = "us-east-1a"
+}
+
+resource "aws_subnet" "r10_111_0_0_private2_tgw" {
+  vpc_id            = aws_vpc.vpc_10_111_0_0.id
+  cidr_block        = "10.111.221.0/24"
+  availability_zone = "us-east-1b"
+}
+
+resource "aws_subnet" "r10_111_0_0_private3_tgw" {
+  vpc_id            = aws_vpc.vpc_10_111_0_0.id
+  cidr_block        = "10.111.222.0/24"
+  availability_zone = "us-east-1c"
+}
+
 resource "aws_internet_gateway" "r10_111_0_0" {
   vpc_id = aws_vpc.vpc_10_111_0_0.id
 }
@@ -62,6 +80,10 @@ resource "aws_route_table" "r10_111_0_0_public" {
     cidr_block         = "10.0.0.0/8"
     transit_gateway_id = aws_ec2_transit_gateway.default.id
   }
+
+  tags = {
+    Name = "r10_111_0_0_public"
+  }
 }
 
 resource "aws_route_table" "r10_111_0_0_private" {
@@ -74,8 +96,25 @@ resource "aws_route_table" "r10_111_0_0_private" {
 
   route {
     cidr_block         = "10.0.0.0/8"
-//    transit_gateway_id = aws_ec2_transit_gateway.default.id
+    transit_gateway_id = aws_ec2_transit_gateway.default.id
+//    network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
+  }
+
+  tags = {
+    Name = "r10_111_0_0_private"
+  }
+}
+
+resource "aws_route_table" "r10_111_0_0_tgw" {
+  vpc_id = aws_vpc.vpc_10_111_0_0.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
     network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
+  }
+
+  tags = {
+    Name = "r10_111_0_0_tgw"
   }
 }
 
@@ -109,6 +148,21 @@ resource "aws_route_table_association" "r10_111_0_0_private_sub3" {
   subnet_id      = aws_subnet.r10_111_0_0_private3.id
 }
 
+resource "aws_route_table_association" "r10_111_0_0_private_tgw_sub1" {
+  route_table_id = aws_route_table.r10_111_0_0_tgw.id
+  subnet_id      = aws_subnet.r10_111_0_0_private1_tgw.id
+}
+
+resource "aws_route_table_association" "r10_111_0_0_private_tgw_sub2" {
+  route_table_id = aws_route_table.r10_111_0_0_tgw.id
+  subnet_id      = aws_subnet.r10_111_0_0_private2_tgw.id
+}
+
+resource "aws_route_table_association" "r10_111_0_0_private_tgw_sub3" {
+  route_table_id = aws_route_table.r10_111_0_0_tgw.id
+  subnet_id      = aws_subnet.r10_111_0_0_private3_tgw.id
+}
+
 resource "aws_eip" "r10_111_0_0_nat_gateway" {
   vpc        = true
   depends_on = [aws_internet_gateway.r10_111_0_0]
@@ -125,9 +179,9 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "r10_111_0_0" {
   transit_gateway_id = aws_ec2_transit_gateway.default.id
 
   subnet_ids = [
-    aws_subnet.r10_111_0_0_private1.id,
-    aws_subnet.r10_111_0_0_private2.id,
-    aws_subnet.r10_111_0_0_private3.id,
+    aws_subnet.r10_111_0_0_private1_tgw.id,
+    aws_subnet.r10_111_0_0_private2_tgw.id,
+    aws_subnet.r10_111_0_0_private3_tgw.id,
   ]
 
   transit_gateway_default_route_table_association = false

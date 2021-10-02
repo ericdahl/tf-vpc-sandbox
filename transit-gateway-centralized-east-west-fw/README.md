@@ -8,9 +8,12 @@ This example:
     - attached to TGW
     - default route to TGW
     - has IGWs
-        - TODO: consider centralizing IGWs if possible
 - creates central VPC (10.111)
     - has NAT GWs
+    - Route Tables
+      - Public
+      - Private - default to NAT GW
+      - Private-TGW - default route to ENI for pfSense
 - TGW
     - extra default route to go to central VPC
   
