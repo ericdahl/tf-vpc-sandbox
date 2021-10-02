@@ -13,4 +13,16 @@ This example:
     - has NAT GWs
 - TGW
     - extra default route to go to central VPC
-    
+  
+
+# pfsense
+
+## local proxy
+
+$ ssh -L 1111:10.111.101.111:443 ec2-user@<vpc 111 jumphost ip>
+
+username = admin
+password = from console in EC2 (TODO: set static demo password)
+
+- add firewall rule to allow all (deny by default)
+-- # TODO figure out how to automate in user-data

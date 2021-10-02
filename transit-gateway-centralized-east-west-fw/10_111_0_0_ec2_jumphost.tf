@@ -12,7 +12,7 @@ resource "aws_security_group_rule" "jumphost_10_111_0_0_egress" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "jumphost_10_111_0_0_ingress" {
+resource "aws_security_group_rule" "jumphost_10_111_0_0_ingress_ssh_admin" {
   security_group_id = aws_security_group.jumphost_10_111_0_0.id
   type              = "ingress"
   from_port         = 22
@@ -20,6 +20,18 @@ resource "aws_security_group_rule" "jumphost_10_111_0_0_ingress" {
   protocol          = "tcp"
   cidr_blocks       = [var.admin_ip_cidr]
 }
+
+resource "aws_security_group_rule" "jumphost_10_111_0_0_ingress_https_admin" {
+  security_group_id = aws_security_group.jumphost_10_111_0_0.id
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = [var.admin_ip_cidr]
+}
+
+
+
 
 resource "aws_security_group_rule" "jumphost_10_111_0_0_ingress_rfc" {
   security_group_id = aws_security_group.jumphost_10_111_0_0.id

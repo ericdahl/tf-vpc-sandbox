@@ -71,9 +71,27 @@ resource "aws_security_group_rule" "vpc_10_111_0_0_pfsense_ingress_jumphost" {
   source_security_group_id = aws_security_group.jumphost_10_111_0_0.id
 }
 
+resource "aws_security_group_rule" "vpc_10_111_0_0_pfsense_ingress_https_rfc" {
+  security_group_id = aws_security_group.vpc_10_111_0_0_pfsense.id
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["10.0.0.0/8"]
+}
+
 resource "aws_security_group_rule" "vpc_10_111_0_0_pfsense_egress_all" {
   security_group_id = aws_security_group.vpc_10_111_0_0_pfsense.id
   type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "vpc_10_111_0_0_pfsense_ingress_all" {
+  security_group_id = aws_security_group.vpc_10_111_0_0_pfsense.id
+  type              = "ingress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
