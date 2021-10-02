@@ -7,6 +7,10 @@ A sandbox testing out various VPC configurations
 - [Transit Gateway](transit-gateway)
 - [Transit Gateway Custom](transit-gateway-custom)
     - more complex routing setup
+- [Transit Gateway Centralized NAT GW](transit-gateway-centralized-nat)
+  - centralize NAT Gateways (e.g., for cost savings)
+- [Transit Gateway Centralized East-West FW](transit-gateway-centralized-east-west-fw)
+  - centralized firewall appliance for east-west cross-VPC traffic
   
 
 # Misc notes
@@ -25,3 +29,10 @@ A sandbox testing out various VPC configurations
 - TGW Attachment 1-1 TGW Route Table association
   - TGW-A can only be associated to one route table
 - VPC can be attached up to once to a particular TGW 
+
+## pfSense startup failure
+
+I ran into an issue where pfSense would get stuck in initializing on first boot.
+System logs showed it auto-reboot for no clear reason. I ended up terminating
+and relaunching 3 times until it was stable (same configuration). Not very
+satisfying.

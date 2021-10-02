@@ -54,7 +54,8 @@ resource "aws_instance" "r10_111_0_0_jumphost" {
   key_name = aws_key_pair.default.key_name
 
   tags = {
-    Name = "10_111_0_0_jumphost"
+    Name        = "10_111_0_0_jumphost"
+    Description = "Allows connectivity to firewall appliance"
   }
 }
 

@@ -97,7 +97,7 @@ resource "aws_route_table" "r10_111_0_0_private" {
   route {
     cidr_block         = "10.0.0.0/8"
     transit_gateway_id = aws_ec2_transit_gateway.default.id
-//    network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
+    //    network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
   }
 
   tags = {
@@ -109,7 +109,7 @@ resource "aws_route_table" "r10_111_0_0_tgw" {
   vpc_id = aws_vpc.vpc_10_111_0_0.id
 
   route {
-    cidr_block     = "0.0.0.0/0"
+    cidr_block           = "0.0.0.0/0"
     network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
   }
 

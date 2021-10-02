@@ -26,11 +26,11 @@ resource "aws_ec2_transit_gateway_route_table_association" "dev" {
 }
 
 
-
+# default route to funnel all TGW traffic to the centralized networking VPC
+# for filtering, etc
 resource "aws_ec2_transit_gateway_route" "dev" {
   destination_cidr_block         = "0.0.0.0/0"
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.dev.id
 
   transit_gateway_attachment_id = aws_ec2_transit_gateway_vpc_attachment.r10_111_0_0.id
-
 }

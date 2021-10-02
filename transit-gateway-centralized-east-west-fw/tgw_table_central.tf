@@ -8,7 +8,7 @@ resource "aws_ec2_transit_gateway_route_table" "central" {
 }
 
 resource "aws_ec2_transit_gateway_route" "central_default" {
-  destination_cidr_block = "0.0.0.0/0"
+  destination_cidr_block         = "0.0.0.0/0"
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.central.id
 
   transit_gateway_attachment_id = aws_ec2_transit_gateway_vpc_attachment.r10_111_0_0.id
@@ -17,13 +17,13 @@ resource "aws_ec2_transit_gateway_route" "central_default" {
 
 resource "aws_ec2_transit_gateway_route" "central_vpc" {
   for_each = {
-    "vpc_10.1.0.0" : {"cidr": "10.1.0.0/16", "attachment_id": aws_ec2_transit_gateway_vpc_attachment.r10_1_0_0.id}
-    "vpc_10.2.0.0" : {"cidr": "10.2.0.0/16", "attachment_id": aws_ec2_transit_gateway_vpc_attachment.r10_2_0_0.id}
+    "vpc_10.1.0.0" : { "cidr" : "10.1.0.0/16", "attachment_id" : aws_ec2_transit_gateway_vpc_attachment.r10_1_0_0.id }
+    "vpc_10.2.0.0" : { "cidr" : "10.2.0.0/16", "attachment_id" : aws_ec2_transit_gateway_vpc_attachment.r10_2_0_0.id }
   }
 
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.central.id
-  transit_gateway_attachment_id = each.value.attachment_id
-  destination_cidr_block = each.value.cidr
+  transit_gateway_attachment_id  = each.value.attachment_id
+  destination_cidr_block         = each.value.cidr
 }
 
 

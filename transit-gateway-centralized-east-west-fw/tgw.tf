@@ -6,5 +6,3 @@ resource "aws_ec2_transit_gateway" "default" {
     Name = "transit-gateway-centralized-east-west-fw"
   }
 }
-
-
