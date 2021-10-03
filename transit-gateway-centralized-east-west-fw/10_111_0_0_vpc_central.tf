@@ -116,6 +116,13 @@ resource "aws_route_table" "r10_111_0_0_tgw" {
   tags = {
     Name = "r10_111_0_0_tgw"
   }
+
+  # workaround for https://github.com/hashicorp/terraform-provider-aws/issues/1426
+  # without this, the Plan reports that current route has (instance_id, eni_id) and forces
+  # recreate to (eni_id). We only route to eni_id
+  lifecycle {
+    ignore_changes = [route]
+  }
 }
 
 resource "aws_route_table_association" "r10_111_0_0_sub1" {
