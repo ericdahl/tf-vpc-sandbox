@@ -34,18 +34,19 @@ resource "aws_eip" "pfsense_10_111_0_0_admin" {
 
 
 resource "aws_instance" "vpc_10_111_0_0_pfsense" {
-  ami           = data.aws_ami.pfsense.id
-  instance_type = "m4.large"
+//  ami           = data.aws_ami.pfsense.id
+  ami = data.aws_ami.freebsd.id
+  instance_type = "m5.large"
 
   network_interface {
     network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
     device_index         = 0
   }
 
-  network_interface {
-    network_interface_id = aws_network_interface.pfsense_10_111_0_0_admin.id
-    device_index         = 1
-  }
+//  network_interface {
+//    network_interface_id = aws_network_interface.pfsense_10_111_0_0_admin.id
+//    device_index         = 1
+//  }
 
   key_name = aws_key_pair.default.key_name
 
@@ -53,6 +54,11 @@ resource "aws_instance" "vpc_10_111_0_0_pfsense" {
 //  user_data = <<EOF
 //password=foobar
 //EOF
+
+  user_data = <<EOF
+#!/bin/sh
+echo 'gateway_enable="YES"' >> /etc/rc.conf
+EOF
 
   tags = {
     Name = "vpc_10_111_0_0_pfsense"

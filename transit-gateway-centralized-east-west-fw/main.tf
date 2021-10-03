@@ -31,6 +31,34 @@ data "aws_ami" "pfsense" {
   }
 }
 
+data "aws_ami" "freebsd" {
+  owners = [
+    782442783595
+  ]
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "name"
+    values = ["FreeBSD 13.0-RELEASE-amd64"]
+  }
+
+  most_recent = true
+}
+
 resource "aws_key_pair" "default" {
   public_key = var.public_key
 }

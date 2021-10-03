@@ -19,6 +19,11 @@ This example:
 - TGW
     - extra default route to go to central VPC
 
+# freebsd 
+
+- works by default (fw open)
+- TODO: adding second ENI for public interface results in unstable network?
+
 # pfsense
 
 ## local proxy
