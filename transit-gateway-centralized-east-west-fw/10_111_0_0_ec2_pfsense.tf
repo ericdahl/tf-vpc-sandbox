@@ -131,7 +131,3 @@ resource "aws_security_group_rule" "vpc_10_111_0_0_pfsense_admin_ingress_22" {
 }
 
 
-output "vpc111_pfsense_private_ip" {
-  value = aws_instance.vpc_10_111_0_0_pfsense.private_ip
-}
-

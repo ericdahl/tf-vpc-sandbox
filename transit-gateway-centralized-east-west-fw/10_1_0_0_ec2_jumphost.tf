@@ -46,11 +46,4 @@ resource "aws_instance" "r10_1_0_0_jumphost" {
   }
 }
 
-output "vpc1_jumphost_public_ip" {
-  value = aws_instance.r10_1_0_0_jumphost.public_ip
-}
-
-output "vpc1_jumphost_private_ip" {
-  value = aws_instance.r10_1_0_0_jumphost.private_ip
-}
 

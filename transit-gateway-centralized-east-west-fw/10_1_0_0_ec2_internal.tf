@@ -45,7 +45,3 @@ resource "aws_instance" "r10_1_0_0_internal" {
     Name = "10_1_0_0_internal"
   }
 }
-
-output "r10_1_0_0_internal_private_ip" {
-  value = aws_instance.r10_1_0_0_internal.private_ip
-}
