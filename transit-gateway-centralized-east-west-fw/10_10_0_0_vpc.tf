@@ -130,3 +130,9 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "r10_10_0_0" {
 }
 
 
+resource "aws_flow_log" "r10_10_0_0" {
+  vpc_id = aws_vpc.r10_10_0_0.id
+  traffic_type = "ALL"
+  iam_role_arn    = aws_iam_role.vpc_flow_log.arn
+  log_destination = aws_cloudwatch_log_group.vpc_flow_log.arn
+}
