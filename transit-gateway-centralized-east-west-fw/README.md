@@ -1,4 +1,4 @@
-# transit-gateway-centralized-nat
+# transit-gateway-centralized-east-west-fw
 
 ![arch diagram](transit-gateway-centralized-east-west-fw.png?raw=true)
 
