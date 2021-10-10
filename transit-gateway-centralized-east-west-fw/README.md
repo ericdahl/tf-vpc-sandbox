@@ -1,5 +1,7 @@
 # transit-gateway-centralized-nat
 
+![diagram][transit-gateway-centralized-east-west-fw.png]
+
 Sample of many VPCs connected to a central TGW which has a centralized firewall appliance (pfsense, in this case) that
 can do extra filtering logic
 
