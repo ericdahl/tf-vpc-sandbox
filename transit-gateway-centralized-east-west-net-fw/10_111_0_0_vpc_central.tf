@@ -109,7 +109,7 @@ resource "aws_route_table" "r10_111_0_0_tgw" {
   vpc_id = aws_vpc.vpc_10_111_0_0.id
 
   route {
-    cidr_block           = "0.0.0.0/0"
+    cidr_block      = "0.0.0.0/0"
     vpc_endpoint_id = tolist(aws_networkfirewall_firewall.default.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
   }
 
@@ -201,8 +201,8 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "r10_111_0_0" {
 
 
 resource "aws_flow_log" "r10_111_0_0" {
-  vpc_id = aws_vpc.vpc_10_111_0_0.id
-  traffic_type = "ALL"
+  vpc_id          = aws_vpc.vpc_10_111_0_0.id
+  traffic_type    = "ALL"
   iam_role_arn    = aws_iam_role.vpc_flow_log.arn
   log_destination = aws_cloudwatch_log_group.vpc_flow_log.arn
 }
