@@ -110,9 +110,7 @@ resource "aws_route_table" "r10_111_0_0_tgw" {
 
   route {
     cidr_block           = "0.0.0.0/0"
-//    vpc_endpoint_id = aws_networkfirewall_firewall.default.firewall_status[0].sync_states
-    vpc_endpoint_id = "vpce-034123582e23031e8"
-//    network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
+    vpc_endpoint_id = tolist(aws_networkfirewall_firewall.default.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
   }
 
   tags = {
