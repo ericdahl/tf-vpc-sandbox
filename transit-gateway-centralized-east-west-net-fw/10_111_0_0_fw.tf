@@ -16,12 +16,12 @@ resource "aws_networkfirewall_firewall_policy" "default" {
 
 
   firewall_policy {
-    stateless_default_actions          = ["aws:pass"]
+    stateless_default_actions          = ["aws:forward_to_sfe"]
     stateless_fragment_default_actions = ["aws:drop"]
-        stateless_rule_group_reference {
-          priority     = 1
-          resource_arn = aws_networkfirewall_rule_group.block_2222_stateless.arn
-        }
+    stateless_rule_group_reference {
+      priority     = 1
+      resource_arn = aws_networkfirewall_rule_group.block_3333_stateless.arn
+    }
 
     stateful_rule_group_reference {
       resource_arn = aws_networkfirewall_rule_group.block_2222.arn
@@ -55,8 +55,8 @@ resource "aws_networkfirewall_rule_group" "block_2222" {
   }
 }
 
-resource "aws_networkfirewall_rule_group" "block_2222_stateless" {
-  name     = "block-2222-stateless"
+resource "aws_networkfirewall_rule_group" "block_3333_stateless" {
+  name     = "block-3333-stateless"
   type     = "STATELESS"
   capacity = 100
 
@@ -82,8 +82,8 @@ resource "aws_networkfirewall_rule_group" "block_2222_stateless" {
               }
 
               destination_port {
-                from_port = 2222
-                to_port   = 2222
+                from_port = 3333
+                to_port   = 3333
               }
 
               source {
