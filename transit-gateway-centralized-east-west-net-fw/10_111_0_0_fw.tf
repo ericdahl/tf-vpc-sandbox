@@ -4,7 +4,7 @@ resource "aws_networkfirewall_firewall" "default" {
   firewall_policy_arn = aws_networkfirewall_firewall_policy.default.arn
 
   subnet_mapping {
-    subnet_id = aws_subnet.r10_111_0_0_public1.id
+    subnet_id = aws_subnet.r10_111_0_0_private1.id
   }
 
 
@@ -22,6 +22,12 @@ resource "aws_networkfirewall_firewall_policy" "default" {
       priority     = 1
       resource_arn = aws_networkfirewall_rule_group.block_3333_stateless.arn
     }
+
+    stateless_rule_group_reference {
+      priority     = 2
+      resource_arn = aws_networkfirewall_rule_group.stateless_block_egress_443.arn
+    }
+
 
     stateful_rule_group_reference {
       resource_arn = aws_networkfirewall_rule_group.block_2222.arn
@@ -102,6 +108,53 @@ resource "aws_networkfirewall_rule_group" "block_3333_stateless" {
   }
 }
 
+
+resource "aws_networkfirewall_rule_group" "stateless_block_egress_443" {
+  name     = "stateless-block-egress-443"
+  type     = "STATELESS"
+  capacity = 100
+
+
+  rule_group {
+    rules_source {
+      stateless_rules_and_custom_actions {
+        stateless_rule {
+          priority = 2
+
+          rule_definition {
+            actions = [
+              "aws:drop",
+            ]
+
+            match_attributes {
+              protocols = [
+                6,
+              ]
+
+              destination {
+                address_definition = "0.0.0.0/0"
+              }
+
+              destination_port {
+                from_port = 443
+                to_port   = 443
+              }
+
+              source {
+                address_definition = "0.0.0.0/0"
+              }
+
+              source_port {
+                from_port = 0
+                to_port   = 65535
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 
 
