@@ -40,7 +40,7 @@ resource "aws_networkfirewall_rule_group" "block_2222" {
       stateful_rule {
         action = "DROP"
         header {
-          destination      = "0.0.0.0/8"
+          destination      = "0.0.0.0/0"
           destination_port = 2222
           direction        = "ANY"
           protocol         = "TCP"
