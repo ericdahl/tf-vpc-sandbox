@@ -8,7 +8,7 @@ resource "aws_ec2_transit_gateway_route_table" "stage" {
 
 resource "aws_ec2_transit_gateway_route_table_association" "stage" {
   for_each = {
-//    "vpc_10.10.0.0" : aws_ec2_transit_gateway_vpc_attachment.r10_10_0_0
+    //    "vpc_10.10.0.0" : aws_ec2_transit_gateway_vpc_attachment.r10_10_0_0
   }
 
   transit_gateway_attachment_id  = each.value.id
