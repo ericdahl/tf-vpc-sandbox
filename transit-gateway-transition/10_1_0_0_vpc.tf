@@ -62,7 +62,7 @@ resource "aws_route_table" "r10_1_0_0_public" {
 
     cidr_block         = "10.0.0.0/8"
     transit_gateway_id = aws_ec2_transit_gateway.legacy.id
-//    transit_gateway_id = aws_ec2_transit_gateway.default.id
+    //    transit_gateway_id = aws_ec2_transit_gateway.default.id
   }
 
   tags = {
@@ -76,7 +76,7 @@ resource "aws_route_table" "r10_1_0_0_private" {
   route {
     cidr_block         = "0.0.0.0/0"
     transit_gateway_id = aws_ec2_transit_gateway.legacy.id
-//    transit_gateway_id = aws_ec2_transit_gateway.default.id
+    //    transit_gateway_id = aws_ec2_transit_gateway.default.id
   }
 
   tags = {

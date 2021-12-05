@@ -18,8 +18,8 @@ resource "aws_ec2_transit_gateway_route_table" "dev" {
 
 resource "aws_ec2_transit_gateway_route_table_association" "dev" {
   for_each = {
-        "vpc_10.1.0.0" : aws_ec2_transit_gateway_vpc_attachment.r10_1_0_0_new
-        "vpc_10.2.0.0" : aws_ec2_transit_gateway_vpc_attachment.r10_2_0_0_new
+    "vpc_10.1.0.0" : aws_ec2_transit_gateway_vpc_attachment.r10_1_0_0_new
+    "vpc_10.2.0.0" : aws_ec2_transit_gateway_vpc_attachment.r10_2_0_0_new
   }
 
   transit_gateway_attachment_id  = each.value.id
