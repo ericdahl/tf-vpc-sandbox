@@ -20,6 +20,19 @@ resource "aws_security_group_rule" "client_egress_all" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "client_ingress_icmp_vpc" {
+  security_group_id = aws_security_group.client.id
+
+  type        = "ingress"
+  from_port   = -1
+  to_port     = -1
+  protocol    = "icmp"
+  cidr_blocks = [
+    aws_vpc.client.cidr_block,
+    aws_vpc.ap_southeast_1_client.cidr_block
+  ]
+}
+
 resource "aws_security_group_rule" "client_ingress_ssh_admin" {
   security_group_id = aws_security_group.client.id
 

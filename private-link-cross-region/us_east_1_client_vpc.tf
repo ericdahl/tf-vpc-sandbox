@@ -1,5 +1,9 @@
 resource "aws_vpc" "client" {
   cidr_block = "10.1.0.0/16"
+
+  tags = {
+    Name = "client"
+  }
 }
 
 resource "aws_subnet" "client_public" {
@@ -23,6 +27,14 @@ resource "aws_internet_gateway" "client" {
 
 resource "aws_route_table" "client_public" {
   vpc_id = aws_vpc.client.id
+}
+
+
+resource "aws_route" "client_vpc_peer" {
+  route_table_id = aws_route_table.client_public.id
+
+  destination_cidr_block = aws_vpc.ap_southeast_1_client.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.client.id
 }
 
 resource "aws_route" "client_public" {
