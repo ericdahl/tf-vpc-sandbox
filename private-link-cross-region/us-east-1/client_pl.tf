@@ -26,6 +26,17 @@ resource "aws_security_group_rule" "client_interface_ingress_http_client" {
   source_security_group_id = aws_security_group.client.id
 }
 
+resource "aws_security_group_rule" "client_interface_ingress_http_vpc_peer" {
+  security_group_id = aws_security_group.client_interface.id
+
+  type      = "ingress"
+  from_port = 80
+  protocol  = "tcp"
+  to_port   = 80
+
+  cidr_blocks = [var.peer_cidr_block]
+}
+
 output "client_pl_dns" {
   value = aws_vpc_endpoint.client_interface.dns_entry
 }

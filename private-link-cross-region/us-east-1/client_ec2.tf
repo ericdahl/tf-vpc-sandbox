@@ -29,7 +29,7 @@ resource "aws_security_group_rule" "client_ingress_icmp_vpc" {
   protocol    = "icmp"
   cidr_blocks = [
     aws_vpc.client.cidr_block,
-    aws_vpc.ap_southeast_1_client.cidr_block
+    var.peer_cidr_block
   ]
 }
 
