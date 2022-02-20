@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "client_interface_ingress_http_vpc_peer" {
   protocol  = "tcp"
   to_port   = 80
 
-  cidr_blocks = [var.peer_cidr_block]
+  source_security_group_id = var.peer_security_group
 }
 
 output "client_pl_dns" {

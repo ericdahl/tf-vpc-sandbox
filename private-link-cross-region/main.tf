@@ -26,6 +26,8 @@ resource "aws_vpc_peering_connection" "client" {
   peer_vpc_id = module.ap_southeast_1.vpc_id
 }
 
+data "aws_caller_identity" "current" {}
+
 module "us_east_1" {
   source = "./us-east-1"
 
@@ -35,6 +37,7 @@ module "us_east_1" {
   peer_cidr_block = module.ap_southeast_1.cidr_block
 
   vpc_peering_connection = aws_vpc_peering_connection.client.id
+  peer_security_group = "${data.aws_caller_identity.current.account_id}/${module.ap_southeast_1.ec2_security_group}"
 }
 
 module "ap_southeast_1" {
