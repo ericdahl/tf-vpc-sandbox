@@ -13,8 +13,8 @@ output "ip" {
       }
       vpc_10_2_0_0 = {
         jumphost = {
-          public_ip  = aws_instance.r10_2_0_0_jumphost.public_ip
-          private_ip = aws_instance.r10_2_0_0_jumphost.private_ip
+          public_ip  = module.vpc_10_2_0_0.ec2_jumphost.public_ip
+          private_ip = module.vpc_10_2_0_0.ec2_jumphost.private_ip
         }
       }
     }
@@ -35,8 +35,4 @@ output "ip" {
       }
     }
   }
-}
-
-output "new" {
-  value = module.vpc_10_3_0_0.jumphost
 }
