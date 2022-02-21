@@ -243,6 +243,12 @@ resource "aws_route_table_association" "private" {
 #  log_destination = aws_cloudwatch_log_group.vpc_flow_log.arn
 #}
 
+#resource "aws_ec2_transit_gateway_vpc_attachment" "default" {
+#  for_each = toset([var.tgw_id])
+#
+#  vpc_id             = aws_vpc.default.id
+#  transit_gateway_id = each.value
+
 resource "aws_ec2_transit_gateway_vpc_attachment" "default" {
   vpc_id             = aws_vpc.default.id
   transit_gateway_id = var.tgw_id

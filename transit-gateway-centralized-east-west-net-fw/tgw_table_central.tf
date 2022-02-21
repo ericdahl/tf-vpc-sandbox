@@ -17,7 +17,7 @@ resource "aws_ec2_transit_gateway_route" "central_default" {
 
 resource "aws_ec2_transit_gateway_route" "central_vpc" {
   for_each = {
-    "vpc_10.1.0.0" : { "cidr" : "10.1.0.0/16", "attachment_id" : aws_ec2_transit_gateway_vpc_attachment.r10_1_0_0.id }
+    "vpc_10.1.0.0" : { "cidr" : "10.1.0.0/16", "attachment_id" : module.vpc_10_1_0_0.tgw_attachment_id }
     "vpc_10.2.0.0" : { "cidr" : "10.2.0.0/16", "attachment_id" : module.vpc_10_2_0_0.tgw_attachment_id}
     "vpc_10.3.0.0" : { "cidr" : "10.3.0.0/16", "attachment_id" : module.vpc_10_3_0_0.tgw_attachment_id}
     "vpc_10.10.0.0" : { "cidr" : "10.10.0.0/16", "attachment_id" : aws_ec2_transit_gateway_vpc_attachment.r10_10_0_0.id }
