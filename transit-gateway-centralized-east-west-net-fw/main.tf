@@ -110,3 +110,13 @@ resource "aws_iam_role_policy" "vpc_flow_log" {
 }
 EOF
 }
+
+module "vpc_10_3_0_0" {
+  source = "./vpc"
+
+  cidr_block = "10.3.0.0/16"
+  tgw_id     = aws_ec2_transit_gateway.default.id
+
+  admin_ip_cidr = var.admin_ip_cidr
+  public_key = var.public_key
+}

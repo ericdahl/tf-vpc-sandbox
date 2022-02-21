@@ -36,3 +36,7 @@ output "ip" {
     }
   }
 }
+
+output "new" {
+  value = module.vpc_10_3_0_0.jumphost
+}
