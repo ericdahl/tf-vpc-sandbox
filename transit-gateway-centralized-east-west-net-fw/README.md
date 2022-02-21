@@ -46,3 +46,14 @@ If trying to a specific subnet, pointing to TGW:
 ```
 The destination CIDR block 10.1.102.0/24 is equal to or more specific than one of this VPC's CIDR blocks. This route can target only an interface or an instance.
 ```
+
+## Route Propagation
+
+- FW VPC must be associated to TGW Route table which knows how to route to each VPC
+  - Two options
+    - Create dedicated central/tgw VPC and ensure routes for every VPC attachment are in place
+    - Leverage "TGW default propagation table"
+      - Any VPC attachment has the VPC CIDR(s) automatically injected in this route table
+      - FW VPC TGW-Attachments are then Associated to this table
+      - benefit: fewer updates per new VPC
+      - con: less explicit, maybe confusing

@@ -142,6 +142,18 @@ module "vpc_10_3_0_0" {
   public_key    = var.public_key
 }
 
+module "vpc" {
+  source = "./vpc"
+
+#  cidr_block = "10.3.0.0/16"
+  for_each = toset(["10.4.0.0/16"])
+  cidr_block = each.value
+  tgw_id     = aws_ec2_transit_gateway.default.id
+
+  admin_ip_cidr = var.admin_ip_cidr
+  public_key    = var.public_key
+}
+
 module "vpc_10_10_0_0" {
   source = "./vpc"
 

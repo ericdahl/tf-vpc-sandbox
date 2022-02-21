@@ -192,7 +192,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "r10_111_0_0" {
   ]
 
   transit_gateway_default_route_table_association = false
-  transit_gateway_default_route_table_propagation = false
+  transit_gateway_default_route_table_propagation = true
 
   tags = {
     Name = "10.111.0.0/16"
