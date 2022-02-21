@@ -24,7 +24,7 @@ resource "aws_security_group_rule" "jumphost_10_111_0_0_ingress_ssh_admin" {
 resource "aws_instance" "r10_111_0_0_jumphost" {
   ami           = data.aws_ssm_parameter.amazon_linux_2.value
   instance_type = "t2.small"
-  subnet_id     = aws_subnet.fw_public["us-east-1a"].id
+  subnet_id     = aws_subnet.public["us-east-1a"].id
 
   vpc_security_group_ids = [
     aws_security_group.jumphost_10_111_0_0.id

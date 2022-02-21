@@ -4,7 +4,7 @@ resource "aws_networkfirewall_firewall" "default" {
   firewall_policy_arn = aws_networkfirewall_firewall_policy.default.arn
 
   subnet_mapping {
-    subnet_id = aws_subnet.fw_private["us-east-1a"].id
+    subnet_id = aws_subnet.private["us-east-1a"].id
   }
 }
 

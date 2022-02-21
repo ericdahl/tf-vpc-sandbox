@@ -16,7 +16,7 @@ resource "aws_vpc" "fw" {
 
 #### PUBLIC
 
-resource "aws_subnet" "fw_public" {
+resource "aws_subnet" "public" {
   vpc_id = aws_vpc.fw.id
 
   for_each = zipmap(slice(data.aws_availability_zones.default.names, 0, 3), local.public_subnet_cidrs)
@@ -31,30 +31,30 @@ resource "aws_subnet" "fw_public" {
   }
 }
 
-resource "aws_route_table" "fw_public" {
+resource "aws_route_table" "public" {
   vpc_id = aws_vpc.fw.id
 }
 
-resource "aws_route" "fw_public" {
-  route_table_id = aws_route_table.fw_public.id
+resource "aws_route" "public_default_igw" {
+  route_table_id = aws_route_table.public.id
 
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.fw.id
 }
 
-resource "aws_route" "fw_public_rfc_1918_tgw" {
+resource "aws_route" "public_rfc_1918_tgw" {
   for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
 
-  route_table_id = aws_route_table.fw_public.id
+  route_table_id = aws_route_table.public.id
 
   destination_cidr_block = each.value
   transit_gateway_id     = aws_ec2_transit_gateway_vpc_attachment.fw.transit_gateway_id
 }
 
-resource "aws_route_table_association" "fw_public" {
-  for_each = aws_subnet.fw_public
+resource "aws_route_table_association" "public" {
+  for_each = aws_subnet.public
 
-  route_table_id = aws_route_table.fw_public.id
+  route_table_id = aws_route_table.public.id
   subnet_id      = each.value.id
 }
 
@@ -63,7 +63,7 @@ resource "aws_route_table_association" "fw_public" {
 #### PRIVATE
 
 
-resource "aws_subnet" "fw_private" {
+resource "aws_subnet" "private" {
   vpc_id = aws_vpc.fw.id
 
   for_each = zipmap(slice(data.aws_availability_zones.default.names, 0, 3), local.private_subnet_cidrs)
@@ -78,8 +78,11 @@ resource "aws_subnet" "fw_private" {
   }
 }
 
+resource "aws_internet_gateway" "fw" {
+  vpc_id = aws_vpc.fw.id
+}
 
-resource "aws_route_table" "fw_private" {
+resource "aws_route_table" "private" {
   vpc_id = aws_vpc.fw.id
 
   tags = {
@@ -88,17 +91,19 @@ resource "aws_route_table" "fw_private" {
 }
 
 
-resource "aws_route" "fw_private_nat_gw" {
-  route_table_id = aws_route_table.fw_private.id
+
+
+resource "aws_route" "private_default_nat_gw" {
+  route_table_id = aws_route_table.private.id
 
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.r10_111_0_0_default.id
+  nat_gateway_id = aws_nat_gateway.fw.id
 }
 
-resource "aws_route" "fw_private_rfc_1918" {
+resource "aws_route" "private_rfc_1918" {
   for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
 
-  route_table_id = aws_route_table.fw_private.id
+  route_table_id = aws_route_table.private.id
 
   destination_cidr_block         = each.value
   transit_gateway_id = aws_ec2_transit_gateway.default.id
@@ -106,10 +111,10 @@ resource "aws_route" "fw_private_rfc_1918" {
 }
 
 
-resource "aws_route_table_association" "fw_private" {
-  for_each = aws_subnet.fw_private
+resource "aws_route_table_association" "private" {
+  for_each = aws_subnet.private
 
-  route_table_id = aws_route_table.fw_private.id
+  route_table_id = aws_route_table.private.id
   subnet_id      = each.value.id
 }
 
@@ -119,7 +124,7 @@ resource "aws_route_table_association" "fw_private" {
 
 
 
-resource "aws_subnet" "fw_private_tgw" {
+resource "aws_subnet" "tgw" {
   vpc_id = aws_vpc.fw.id
 
   for_each = zipmap(slice(data.aws_availability_zones.default.names, 0, 3), local.private_tgw_subnet_cidrs)
@@ -134,7 +139,7 @@ resource "aws_subnet" "fw_private_tgw" {
   }
 }
 
-resource "aws_route_table" "fw_private_tgw" {
+resource "aws_route_table" "tgw" {
   vpc_id = aws_vpc.fw.id
 
   tags = {
@@ -142,50 +147,39 @@ resource "aws_route_table" "fw_private_tgw" {
   }
 }
 
-resource "aws_route" "fw_private_tgw_firewall" {
-  route_table_id = aws_route_table.fw_private_tgw.id
+resource "aws_route" "tgw_default_firewall" {
+  route_table_id = aws_route_table.tgw.id
 
   destination_cidr_block = "0.0.0.0/0"
   vpc_endpoint_id = tolist(aws_networkfirewall_firewall.default.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
-
-  # workaround for https://github.com/hashicorp/terraform-provider-aws/issues/1426
-  # without this, the Plan reports that current route has (instance_id, eni_id) and forces
-  # recreate to (eni_id). We only route to eni_id
-#  lifecycle {
-#    ignore_changes = [route]
-#  }
 }
 
-resource "aws_route" "fw_private_rfc_1918_tgw" {
+resource "aws_route" "tgw_default_tgw" {
   for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
 
-  route_table_id = aws_route_table.fw_private.id
+  route_table_id = aws_route_table.private.id
 
   destination_cidr_block         = each.value
   transit_gateway_id = aws_ec2_transit_gateway.default.id
   //    network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
 }
 
-resource "aws_route_table_association" "fw_private_tgw" {
-  for_each = aws_subnet.fw_private_tgw
+resource "aws_route_table_association" "tgw" {
+  for_each = aws_subnet.tgw
 
-  route_table_id = aws_route_table.fw_private_tgw.id
+  route_table_id = aws_route_table.tgw.id
   subnet_id      = each.value.id
 }
 
 
-resource "aws_internet_gateway" "fw" {
-  vpc_id = aws_vpc.fw.id
-}
-
-resource "aws_eip" "r10_111_0_0_nat_gateway" {
+resource "aws_eip" "fw" {
   vpc        = true
   depends_on = [aws_internet_gateway.fw]
 }
 
-resource "aws_nat_gateway" "r10_111_0_0_default" {
-  allocation_id = aws_eip.r10_111_0_0_nat_gateway.id
-  subnet_id     = aws_subnet.fw_public["us-east-1a"].id
+resource "aws_nat_gateway" "fw" {
+  allocation_id = aws_eip.fw.id
+  subnet_id     = aws_subnet.public["us-east-1a"].id
 }
 
 
@@ -193,13 +187,13 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "fw" {
   vpc_id             = aws_vpc.fw.id
   transit_gateway_id = aws_ec2_transit_gateway.default.id
 
-  subnet_ids = [ for s in aws_subnet.fw_private_tgw : s.id ]
+  subnet_ids = [ for s in aws_subnet.tgw : s.id ]
 
   transit_gateway_default_route_table_association = false
   transit_gateway_default_route_table_propagation = true
 
   tags = {
-    Name = "10.111.0.0/16"
+    Name = aws_vpc.fw.cidr_block
   }
 }
 
