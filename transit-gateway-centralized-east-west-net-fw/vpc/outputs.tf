@@ -4,14 +4,14 @@ output "tgw_attachment_id" {
 
 output "ec2_jumphost" {
   value = {
-    public_ip = aws_instance.jumphost.public_ip,
+    public_ip  = aws_instance.jumphost.public_ip,
     private_ip = aws_instance.jumphost.private_ip
   }
 }
 
 output "ec2_internal" {
   value = {
-    public_ip = aws_instance.internal.public_ip,
+    public_ip  = aws_instance.internal.public_ip,
     private_ip = aws_instance.internal.private_ip
   }
 }

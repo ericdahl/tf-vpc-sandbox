@@ -1,6 +1,6 @@
 locals {
-  public_subnet_cidrs = [ for s in range(0, 3) : cidrsubnet(aws_vpc.default.cidr_block, 8, s)]
-  private_subnet_cidrs = [ for s in range(128, 131) : cidrsubnet(aws_vpc.default.cidr_block, 8, s)]
+  public_subnet_cidrs  = [for s in range(0, 3) : cidrsubnet(aws_vpc.default.cidr_block, 8, s)]
+  private_subnet_cidrs = [for s in range(128, 131) : cidrsubnet(aws_vpc.default.cidr_block, 8, s)]
 
   #  subnet_cidrs = cidrsubnets("10.0.128.0/16", [ for i in range(256): 8 ]...)
   #  public_subnet_cidrs = slice(local.subnet_cidrs, 0, 3)
@@ -79,7 +79,7 @@ resource "aws_route" "public_rfc_1918_tgw" {
   route_table_id = aws_route_table.public.id
 
   destination_cidr_block = each.value
-  transit_gateway_id = aws_ec2_transit_gateway_vpc_attachment.default.transit_gateway_id
+  transit_gateway_id     = aws_ec2_transit_gateway_vpc_attachment.default.transit_gateway_id
 }
 
 resource "aws_route_table_association" "public" {
@@ -98,7 +98,7 @@ resource "aws_route" "private_default_tgw" {
   route_table_id = aws_route_table.private.id
 
   destination_cidr_block = "0.0.0.0/0"
-  transit_gateway_id = aws_ec2_transit_gateway_vpc_attachment.default.transit_gateway_id
+  transit_gateway_id     = aws_ec2_transit_gateway_vpc_attachment.default.transit_gateway_id
 }
 
 
@@ -253,7 +253,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "default" {
   vpc_id             = aws_vpc.default.id
   transit_gateway_id = var.tgw_id
 
-  subnet_ids = [ for s in aws_subnet.private : s.id ]
+  subnet_ids = [for s in aws_subnet.private : s.id]
 
 
   transit_gateway_default_route_table_association = false

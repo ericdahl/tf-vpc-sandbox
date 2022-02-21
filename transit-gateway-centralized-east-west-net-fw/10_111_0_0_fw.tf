@@ -6,9 +6,6 @@ resource "aws_networkfirewall_firewall" "default" {
   subnet_mapping {
     subnet_id = aws_subnet.r10_111_0_0_private1.id
   }
-
-
-
 }
 
 resource "aws_networkfirewall_firewall_policy" "default" {
