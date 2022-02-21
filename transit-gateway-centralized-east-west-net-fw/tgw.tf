@@ -9,7 +9,7 @@ resource "aws_ec2_transit_gateway" "default" {
 
 resource "aws_ec2_transit_gateway_route_table_association" "central" {
   for_each = {
-    "vpc_10.111.0.0" : aws_ec2_transit_gateway_vpc_attachment.r10_111_0_0
+    "vpc_10.111.0.0" : aws_ec2_transit_gateway_vpc_attachment.fw
   }
 
   transit_gateway_attachment_id  = each.value.id

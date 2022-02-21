@@ -22,5 +22,5 @@ resource "aws_ec2_transit_gateway_route" "stage" {
   destination_cidr_block         = "0.0.0.0/0"
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.stage.id
 
-  transit_gateway_attachment_id = aws_ec2_transit_gateway_vpc_attachment.r10_111_0_0.id
+  transit_gateway_attachment_id = aws_ec2_transit_gateway_vpc_attachment.fw.id
 }
