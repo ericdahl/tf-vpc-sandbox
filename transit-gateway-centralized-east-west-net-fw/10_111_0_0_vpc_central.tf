@@ -1,6 +1,6 @@
 locals {
-  public_subnet_cidrs  = [for s in range(0, 3) : cidrsubnet(aws_vpc.fw.cidr_block, 8, s)]
-  private_subnet_cidrs = [for s in range(128, 131) : cidrsubnet(aws_vpc.fw.cidr_block, 8, s)]
+  public_subnet_cidrs      = [for s in range(0, 3) : cidrsubnet(aws_vpc.fw.cidr_block, 8, s)]
+  private_subnet_cidrs     = [for s in range(128, 131) : cidrsubnet(aws_vpc.fw.cidr_block, 8, s)]
   private_tgw_subnet_cidrs = [for s in range(132, 135) : cidrsubnet(aws_vpc.fw.cidr_block, 8, s)]
 }
 
@@ -97,7 +97,7 @@ resource "aws_route" "private_default_nat_gw" {
   route_table_id = aws_route_table.private.id
 
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.fw.id
+  nat_gateway_id         = aws_nat_gateway.fw.id
 }
 
 resource "aws_route" "private_rfc_1918" {
@@ -105,8 +105,8 @@ resource "aws_route" "private_rfc_1918" {
 
   route_table_id = aws_route_table.private.id
 
-  destination_cidr_block         = each.value
-  transit_gateway_id = aws_ec2_transit_gateway.default.id
+  destination_cidr_block = each.value
+  transit_gateway_id     = aws_ec2_transit_gateway.default.id
   //    network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
 }
 
@@ -151,7 +151,7 @@ resource "aws_route" "tgw_default_firewall" {
   route_table_id = aws_route_table.tgw.id
 
   destination_cidr_block = "0.0.0.0/0"
-  vpc_endpoint_id = tolist(aws_networkfirewall_firewall.default.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
+  vpc_endpoint_id        = tolist(aws_networkfirewall_firewall.default.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
 }
 
 resource "aws_route" "tgw_default_tgw" {
@@ -159,8 +159,8 @@ resource "aws_route" "tgw_default_tgw" {
 
   route_table_id = aws_route_table.private.id
 
-  destination_cidr_block         = each.value
-  transit_gateway_id = aws_ec2_transit_gateway.default.id
+  destination_cidr_block = each.value
+  transit_gateway_id     = aws_ec2_transit_gateway.default.id
   //    network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
 }
 
@@ -187,7 +187,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "fw" {
   vpc_id             = aws_vpc.fw.id
   transit_gateway_id = aws_ec2_transit_gateway.default.id
 
-  subnet_ids = [ for s in aws_subnet.tgw : s.id ]
+  subnet_ids = [for s in aws_subnet.tgw : s.id]
 
   transit_gateway_default_route_table_association = false
   transit_gateway_default_route_table_propagation = true
