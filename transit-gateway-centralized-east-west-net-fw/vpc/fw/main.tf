@@ -35,7 +35,8 @@ resource "aws_route" "private_default_tgw" {
 }
 
 resource "aws_route" "tgw_default_tgw" {
-  for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
+  # if need to bypass FW, can add rfc1918 (more specific) routes to go directly back to TGW
+  for_each = var.enable_firewall_inter_vpc ? toset([]) : toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
 
   route_table_id = module.base_vpc.route_tables.tgw.id
 
