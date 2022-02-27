@@ -8,9 +8,6 @@ module "base_vpc" {
   tgw_id        = var.tgw_id
 }
 
-
-
-
 resource "aws_eip" "fw" {
   vpc        = true
   depends_on = [module.base_vpc.igw]
@@ -20,7 +17,6 @@ resource "aws_nat_gateway" "fw" {
   allocation_id = aws_eip.fw.id
   subnet_id     = module.base_vpc.subnets.public["us-east-1a"].id
 }
-
 
 resource "aws_route" "private_default_tgw" {
   route_table_id = module.base_vpc.route_tables.private.id
@@ -44,8 +40,4 @@ resource "aws_route" "tgw_default_firewall" {
 
   destination_cidr_block = "0.0.0.0/0"
   vpc_endpoint_id        = tolist(var.aws_network_firewall.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
-}
-
-output "vpc" {
-  value = module.base_vpc.vpc
 }
