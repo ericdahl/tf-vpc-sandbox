@@ -22,6 +22,14 @@ resource "aws_vpc" "default" {
   }
 }
 
+resource "aws_flow_log" "default" {
+  vpc_id = aws_vpc.default.id
+  traffic_type = "ALL"
+
+  log_destination = aws_cloudwatch_log_group.vpc_flow_log.arn
+  iam_role_arn = aws_iam_role.vpc_flow_log.arn
+}
+
 resource "aws_internet_gateway" "default" {
   vpc_id = aws_vpc.default.id
 }
