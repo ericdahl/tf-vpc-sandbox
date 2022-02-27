@@ -17,15 +17,15 @@ resource "aws_route_table" "tgw" {
   vpc_id = aws_vpc.default.id
 }
 
-# diff from fw vpc
-## fw - default to FW / rfc 1918 to TGW
-## priv - default to TGW
-resource "aws_route" "tgw_default_tgw" {
-  route_table_id = aws_route_table.tgw.id
-
-  destination_cidr_block = "0.0.0.0/0"
-  transit_gateway_id     = aws_ec2_transit_gateway_vpc_attachment.default.transit_gateway_id
-}
+## diff from fw vpc
+### fw - default to FW / rfc 1918 to TGW
+### priv - default to TGW
+#resource "aws_route" "tgw_default_tgw" {
+#  route_table_id = aws_route_table.tgw.id
+#
+#  destination_cidr_block = "0.0.0.0/0"
+#  transit_gateway_id     = aws_ec2_transit_gateway_vpc_attachment.default.transit_gateway_id
+#}
 
 resource "aws_route_table_association" "tgw" {
   for_each = aws_subnet.tgw

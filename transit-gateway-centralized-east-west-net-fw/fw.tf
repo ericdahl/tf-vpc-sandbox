@@ -1,10 +1,10 @@
 resource "aws_networkfirewall_firewall" "default" {
-  vpc_id              = aws_vpc.fw.id
+  vpc_id              = module.vpc_fw.vpc.id
   name                = "transit-gateway-centralized-east-west-net-fw"
   firewall_policy_arn = aws_networkfirewall_firewall_policy.default.arn
 
   subnet_mapping {
-    subnet_id = aws_subnet.private["us-east-1a"].id
+    subnet_id = module.vpc_fw.subnets.private["us-east-1a"].id
   }
 }
 

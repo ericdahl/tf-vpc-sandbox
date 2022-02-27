@@ -57,3 +57,15 @@ The destination CIDR block 10.1.102.0/24 is equal to or more specific than one o
       - FW VPC TGW-Attachments are then Associated to this table
       - benefit: fewer updates per new VPC
       - con: less explicit, maybe confusing
+
+## TF Design of VPCs
+
+- Workload and FW VPCs are similar but not the same; how to reconcile?
+  - modularize workload VPC; keep FW VPC custom
+  - toggles in common VPC module
+    - private subnets: whether to have default routes to TGW or NAT GW
+    - tgw subnets: whether to have default routes to TGW or VPC-E for FW
+  - workload module and fw module, built on common base vpc module
+    - routes defined in {fw,workload} module
+    - current implementation
+      - least duplication, but adds some complexity (not worth it?)
