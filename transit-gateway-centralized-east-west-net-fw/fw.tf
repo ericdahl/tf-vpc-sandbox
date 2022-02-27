@@ -22,7 +22,7 @@ resource "aws_networkfirewall_firewall_policy" "default" {
 
     stateless_rule_group_reference {
       priority     = 2
-      resource_arn = aws_networkfirewall_rule_group.stateless_block_egress_443.arn
+      resource_arn = aws_networkfirewall_rule_group.stateless_block_egress_80.arn
     }
 
 
@@ -106,8 +106,8 @@ resource "aws_networkfirewall_rule_group" "block_3333_stateless" {
 }
 
 
-resource "aws_networkfirewall_rule_group" "stateless_block_egress_443" {
-  name     = "stateless-block-egress-443"
+resource "aws_networkfirewall_rule_group" "stateless_block_egress_80" {
+  name     = "stateless-block-egress-80"
   type     = "STATELESS"
   capacity = 100
 
@@ -133,8 +133,8 @@ resource "aws_networkfirewall_rule_group" "stateless_block_egress_443" {
               }
 
               destination_port {
-                from_port = 443
-                to_port   = 443
+                from_port = 80
+                to_port   = 80
               }
 
               source {
