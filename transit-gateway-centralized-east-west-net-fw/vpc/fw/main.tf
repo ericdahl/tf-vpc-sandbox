@@ -31,7 +31,7 @@ resource "aws_route" "private_default_tgw" {
   route_table_id = module.base_vpc.route_tables.private.id
 
   destination_cidr_block = "0.0.0.0/0"
-  transit_gateway_id     = module.base_vpc.tgw_attachment.transit_gateway_id
+  nat_gateway_id         = aws_nat_gateway.fw.id
 }
 
 resource "aws_route" "tgw_default_tgw" {
