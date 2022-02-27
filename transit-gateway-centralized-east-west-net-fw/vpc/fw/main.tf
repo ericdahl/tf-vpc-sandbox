@@ -8,12 +8,7 @@ module "base_vpc" {
   tgw_id        = var.tgw_id
 }
 
-variable "cidr_block" {}
-variable "tgw_id" {}
-variable "admin_ip_cidr" {}
-variable "public_key" {}
 
-variable "aws_network_firewall" {}
 
 
 resource "aws_eip" "fw" {
