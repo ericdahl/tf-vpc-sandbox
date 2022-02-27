@@ -18,9 +18,9 @@ output "ec2_internal" {
 
 output "route_tables" {
   value = {
-    public = aws_route_table.public
+    public  = aws_route_table.public
     private = aws_route_table.private
-    tgw = aws_route_table.tgw
+    tgw     = aws_route_table.tgw
   }
 }
 
@@ -30,9 +30,9 @@ output "tgw_attachment" {
 
 output "subnets" {
   value = {
-    public = aws_subnet.public
+    public  = aws_subnet.public
     private = aws_subnet.private
-    tgw = aws_subnet.tgw
+    tgw     = aws_subnet.tgw
   }
 }
 

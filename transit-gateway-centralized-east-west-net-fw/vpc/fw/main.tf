@@ -34,9 +34,6 @@ resource "aws_route" "private_default_tgw" {
   transit_gateway_id     = module.base_vpc.tgw_attachment.transit_gateway_id
 }
 
-# diff from fw vpc
-## fw - default to FW / rfc 1918 to TGW
-## priv - default to TGW
 resource "aws_route" "tgw_default_tgw" {
   for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
 
@@ -44,15 +41,13 @@ resource "aws_route" "tgw_default_tgw" {
 
   destination_cidr_block = each.value
   transit_gateway_id     = var.tgw_id
-  //    network_interface_id = aws_network_interface.pfsense_10_111_0_0.id
 }
 
 resource "aws_route" "tgw_default_firewall" {
   route_table_id = module.base_vpc.route_tables.tgw.id
 
   destination_cidr_block = "0.0.0.0/0"
-#  vpc_endpoint_id        = tolist(aws_networkfirewall_firewall.default.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
-  vpc_endpoint_id = tolist(var.aws_network_firewall.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
+  vpc_endpoint_id        = tolist(var.aws_network_firewall.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
 }
 
 output "vpc" {

@@ -21,9 +21,6 @@ resource "aws_route" "private_default_tgw" {
   transit_gateway_id     = module.base_vpc.tgw_attachment.transit_gateway_id
 }
 
-# diff from fw vpc
-## fw - default to FW / rfc 1918 to TGW
-## priv - default to TGW
 resource "aws_route" "tgw_default_tgw" {
   route_table_id = module.base_vpc.route_tables.tgw.id
 
