@@ -69,3 +69,18 @@ The destination CIDR block 10.1.102.0/24 is equal to or more specific than one o
     - routes defined in {fw,workload} module
     - current implementation
       - least duplication, but adds some complexity (not worth it?)
+
+
+## questions
+- how did inter VPC traffic work (10.1 to 10.2) if FW VPC private subnet had no route to TGW?
+  - route was missing
+  - FW is in private subnet, it would receive packets but need to forward to TGW again
+  - somehow NAT GW was routing traffic
+    - also, example: FW instance -> 10.2
+      - 2 routes: 
+        - local VPC
+        - default to nat GW
+          - how does this work?
+          - with freebsd, 
+            - missing route: okay
+            - add rfc1918 routes to tgw: results in "redirect host nexthop 0.0.0.0"

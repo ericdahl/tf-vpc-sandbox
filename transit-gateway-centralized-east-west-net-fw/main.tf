@@ -51,5 +51,5 @@ module "vpc_fw" {
   admin_ip_cidr = var.admin_ip_cidr
   public_key    = var.public_key
 
-  aws_network_firewall = aws_networkfirewall_firewall.default
+  tgw_default_route_fw_vpc_endpoint_id =  tolist(aws_networkfirewall_firewall.default.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
 }

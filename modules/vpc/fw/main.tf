@@ -18,12 +18,21 @@ resource "aws_nat_gateway" "fw" {
   subnet_id     = module.base_vpc.subnets.public["us-east-1a"].id
 }
 
-resource "aws_route" "private_default_tgw" {
+resource "aws_route" "private_default_natgw" {
   route_table_id = module.base_vpc.route_tables.private.id
 
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.fw.id
 }
+
+#resource "aws_route" "private_rfc1918_tgw" {
+#  for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
+#
+#  route_table_id = module.base_vpc.route_tables.private.id
+#
+#  destination_cidr_block = each.value
+#  transit_gateway_id     = var.tgw_id
+#}
 
 resource "aws_route" "tgw_default_tgw" {
   # if need to bypass FW, can add rfc1918 (more specific) routes to go directly back to TGW
@@ -35,9 +44,22 @@ resource "aws_route" "tgw_default_tgw" {
   transit_gateway_id     = var.tgw_id
 }
 
-resource "aws_route" "tgw_default_firewall" {
+# Used for AWS Network Firewall integration with VPE Endpoint
+resource "aws_route" "tgw_default_firewall_vpce" {
+  count = var.tgw_default_route_fw_vpc_endpoint_id == null ? 0 : 1
+
   route_table_id = module.base_vpc.route_tables.tgw.id
 
   destination_cidr_block = "0.0.0.0/0"
-  vpc_endpoint_id        = tolist(var.aws_network_firewall.firewall_status[0].sync_states)[0].attachment[0].endpoint_id
+  vpc_endpoint_id        = var.tgw_default_route_fw_vpc_endpoint_id
+}
+
+# Used for EC2 based firewalls, without VPC Endpoint
+resource "aws_route" "tgw_default_firewall_eni" {
+  count = var.tgw_default_route_fw_eni_id == null ? 0 : 1
+
+  route_table_id = module.base_vpc.route_tables.tgw.id
+
+  destination_cidr_block = "0.0.0.0/0"
+  network_interface_id = var.tgw_default_route_fw_eni_id
 }

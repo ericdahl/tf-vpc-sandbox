@@ -63,50 +63,46 @@ resource "aws_key_pair" "default" {
   public_key = var.public_key
 }
 
-resource "aws_cloudwatch_log_group" "vpc_flow_log" {
-  name = "transit-gateway-centralized-east-west-fw-flow-log"
+module "vpc_dev" {
+  source = "../modules/vpc/workload"
+
+  for_each = toset([
+    "10.1.0.0/16",
+    "10.2.0.0/16",
+    "10.3.0.0/16",
+    "10.4.0.0/16",
+  ])
+  cidr_block = each.value
+  tgw_id     = aws_ec2_transit_gateway.default.id
+
+  admin_ip_cidr = var.admin_ip_cidr
+  public_key    = var.public_key
 }
 
-resource "aws_iam_role" "vpc_flow_log" {
-  name = "vpc-flow-log"
+module "vpc_stage" {
+  source = "../modules/vpc/workload"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "vpc-flow-logs.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
+  for_each = toset([
+    "10.10.0.0/16",
+  ])
+
+  cidr_block = each.value
+  tgw_id     = aws_ec2_transit_gateway.default.id
+
+  admin_ip_cidr = var.admin_ip_cidr
+  public_key    = var.public_key
 }
 
-resource "aws_iam_role_policy" "vpc_flow_log" {
-  name = "vpc-flow-log"
-  role = aws_iam_role.vpc_flow_log.id
+module "vpc_fw" {
+  source = "../modules/vpc/fw"
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
+  cidr_block = "10.111.0.0/16"
+  tgw_id     = aws_ec2_transit_gateway.default.id
+
+  admin_ip_cidr = var.admin_ip_cidr
+  public_key    = var.public_key
+
+
+  tgw_default_route_fw_vpc_endpoint_id = null
+  tgw_default_route_fw_eni_id = aws_network_interface.fw.id
 }
