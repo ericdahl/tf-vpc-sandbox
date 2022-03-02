@@ -13,7 +13,7 @@ resource "aws_key_pair" "default" {
 }
 
 module "vpc_dev" {
-  source = "./vpc/workload"
+  source = "../modules/vpc/workload"
 
   for_each = toset([
     "10.1.0.0/16",
@@ -29,7 +29,7 @@ module "vpc_dev" {
 }
 
 module "vpc_stage" {
-  source = "./vpc/workload"
+  source = "../modules/vpc/workload"
 
   for_each = toset([
     "10.10.0.0/16",
@@ -43,7 +43,7 @@ module "vpc_stage" {
 }
 
 module "vpc_fw" {
-  source = "./vpc/fw"
+  source = "../modules/vpc/fw"
 
   cidr_block = "10.111.0.0/16"
   tgw_id     = aws_ec2_transit_gateway.default.id
