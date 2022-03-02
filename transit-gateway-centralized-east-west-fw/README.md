@@ -25,6 +25,7 @@ This example:
 
 - works by default (fw open)
 - TODO: adding second ENI for public interface results in unstable network?
+- freebsd seems to run "freebsd-update" then reboot on startup, causing longer launch time
 
 # pfsense
 

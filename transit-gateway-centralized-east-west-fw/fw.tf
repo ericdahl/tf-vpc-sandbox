@@ -30,7 +30,7 @@ resource "aws_eip" "fw_admin" {
 
 
 
-resource "aws_instance" "vpc_10_111_0_0_fw" {
+resource "aws_instance" "fw" {
   //  ami           = data.aws_ami.fw.id
   ami = data.aws_ami.freebsd.id
   instance_type = "m5.large"
@@ -54,12 +54,12 @@ resource "aws_instance" "vpc_10_111_0_0_fw" {
 
   user_data = <<EOF
 #!/bin/sh
-echo 'gateway_enable="YES"' >> /etc/rc.conf
 
+# add some firewall rules
 cat << PF_END > /etc/pf.conf
-dev_vpc_cidrs = "{ 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16 }"' >> /etc/pf.conf
+dev_vpc_cidrs = "{ 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16 }"
 
-#block in all
+block in all
 pass out all keep state
 
 pass in inet proto tcp to any port 22
@@ -67,6 +67,9 @@ pass inet proto icmp from any to any
 
 pass inet proto tcp to any port 443 keep state
 PF_END
+
+echo 'gateway_enable="YES"' >> /etc/rc.conf
+echo 'pf_enable="YES"' >> /etc/rc.conf
 
 EOF
 
