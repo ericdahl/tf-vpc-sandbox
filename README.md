@@ -9,10 +9,10 @@ A sandbox testing out various VPC configurations
     - more complex routing setup
 - [Transit Gateway Centralized NAT GW](transit-gateway-centralized-nat)
   - centralize NAT Gateways (e.g., for cost savings)
-- [Transit Gateway Centralized East-West FW](transit-gateway-centralized-east-west-fw)
+- [Transit Gateway Centralized East-West FW](transit-gateway-centralized-east-west-ec2-fw)
   - centralized firewall appliance for east-west cross-VPC traffic
 - [Transit Gateway Centralized East-West Network Firewall](transit-gateway-centralized-east-west-net-fw)
-  - AWS Network Firewall inspectign east-west VPC traffic in TGW
+  - AWS Network Firewall inspecting east-west VPC traffic in TGW
   
 
 # Misc notes

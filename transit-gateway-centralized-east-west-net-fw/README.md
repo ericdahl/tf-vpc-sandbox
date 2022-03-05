@@ -1,6 +1,6 @@
 # transit-gateway-centralized-east-west-net-fw
 
-See [transit-gateway-centralized-east-west-fw](../transit-gateway-centralized-east-west-fw)
+See [transit-gateway-centralized-east-west-fw](../transit-gateway-centralized-east-west-ec2-fw)
 
 but with AWS Network Firewall instead
 
