@@ -47,10 +47,6 @@ resource "aws_instance" "fw" {
 
   key_name = aws_key_pair.default.key_name
 
-  //  # demo password; instance is internal to VPC, no access
-  //  user_data = <<EOF
-  //password=foobar
-  //EOF
 
   user_data = <<EOF
 #!/bin/sh
@@ -68,8 +64,8 @@ pass inet proto icmp from any to any
 pass inet proto tcp to any port 443 keep state
 PF_END
 
-echo 'gateway_enable="YES"' >> /etc/rc.conf
-echo 'pf_enable="YES"' >> /etc/rc.conf
+sysrc gateway_enable=YES
+sysrc pf_enable=YES
 
 EOF
 
