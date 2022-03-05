@@ -7,7 +7,7 @@ variable "tgw_default_route_fw_vpc_endpoint_id" {
   default = null
 }
 
-variable "tgw_default_route_fw_eni_id" {
+variable "tgw_default_route_fw_eni" {
   default = null
 }
 

@@ -104,5 +104,5 @@ module "vpc_fw" {
 
 
   tgw_default_route_fw_vpc_endpoint_id = null
-  tgw_default_route_fw_eni_id = aws_network_interface.fw.id
+  tgw_default_route_fw_eni = aws_network_interface.fw
 }

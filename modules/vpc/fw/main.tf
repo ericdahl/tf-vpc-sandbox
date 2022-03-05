@@ -56,10 +56,10 @@ resource "aws_route" "tgw_default_firewall_vpce" {
 
 # Used for EC2 based firewalls, without VPC Endpoint
 resource "aws_route" "tgw_default_firewall_eni" {
-  count = var.tgw_default_route_fw_eni_id == null ? 0 : 1
+  count = var.tgw_default_route_fw_eni == null ? 0 : 1
 
   route_table_id = module.base_vpc.route_tables.tgw.id
 
   destination_cidr_block = "0.0.0.0/0"
-  network_interface_id = var.tgw_default_route_fw_eni_id
+  network_interface_id = var.tgw_default_route_fw_eni.id
 }
