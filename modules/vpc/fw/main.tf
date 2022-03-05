@@ -44,22 +44,16 @@ resource "aws_route" "tgw_default_tgw" {
   transit_gateway_id     = var.tgw_id
 }
 
-# Used for AWS Network Firewall integration with VPE Endpoint
-resource "aws_route" "tgw_default_firewall_vpce" {
-  count = var.tgw_default_route_fw_vpc_endpoint_id == null ? 0 : 1
-
-  route_table_id = module.base_vpc.route_tables.tgw.id
-
-  destination_cidr_block = "0.0.0.0/0"
-  vpc_endpoint_id        = var.tgw_default_route_fw_vpc_endpoint_id
-}
-
 # Used for EC2 based firewalls, without VPC Endpoint
-resource "aws_route" "tgw_default_firewall_eni" {
-  count = var.tgw_default_route_fw_eni == null ? 0 : 1
+resource "aws_route" "tgw_default" {
 
   route_table_id = module.base_vpc.route_tables.tgw.id
 
   destination_cidr_block = "0.0.0.0/0"
-  network_interface_id = var.tgw_default_route_fw_eni.id
+
+  # Used for EC2 based firewalls, without VPC Endpoint
+  network_interface_id = var.tgw_default_route_fw_eni == null ? null : var.tgw_default_route_fw_eni.id
+
+  ## Used for AWS Network Firewall integration with VPE Endpoint
+  vpc_endpoint_id = var.tgw_default_route_fw_vpc_endpoint == null ? null : var.tgw_default_route_fw_vpc_endpoint.endpoint_id
 }

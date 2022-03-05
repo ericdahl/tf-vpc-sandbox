@@ -3,7 +3,7 @@ variable "tgw_id" {}
 variable "admin_ip_cidr" {}
 variable "public_key" {}
 
-variable "tgw_default_route_fw_vpc_endpoint_id" {
+variable "tgw_default_route_fw_vpc_endpoint" {
   default = null
 }
 

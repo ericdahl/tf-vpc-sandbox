@@ -103,6 +103,6 @@ module "vpc_fw" {
   public_key    = var.public_key
 
 
-  tgw_default_route_fw_vpc_endpoint_id = null
+  tgw_default_route_fw_vpc_endpoint = null
   tgw_default_route_fw_eni = aws_network_interface.fw
 }
