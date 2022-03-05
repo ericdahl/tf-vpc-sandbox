@@ -38,3 +38,8 @@ I ran into an issue where pfSense would get stuck in initializing on first boot.
 System logs showed it auto-reboot for no clear reason. I ended up terminating
 and relaunching 3 times until it was stable (same configuration). Not very
 satisfying.
+
+# TODO
+
+- cross-region TGW
+- VPN TGW Attachment
