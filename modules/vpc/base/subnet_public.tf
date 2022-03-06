@@ -15,6 +15,10 @@ resource "aws_subnet" "public" {
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.default.id
+
+  tags = {
+    Name = "${aws_vpc.default.cidr_block}-public"
+  }
 }
 
 resource "aws_route" "public" {

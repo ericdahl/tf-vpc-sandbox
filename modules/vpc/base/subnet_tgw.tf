@@ -15,6 +15,10 @@ resource "aws_subnet" "tgw" {
 
 resource "aws_route_table" "tgw" {
   vpc_id = aws_vpc.default.id
+
+  tags = {
+    Name = "${aws_vpc.default.cidr_block}-tgw"
+  }
 }
 
 resource "aws_route_table_association" "tgw" {

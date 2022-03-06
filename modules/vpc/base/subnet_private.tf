@@ -15,6 +15,10 @@ resource "aws_subnet" "private" {
 
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.default.id
+
+  tags = {
+    Name = "${aws_vpc.default.cidr_block}-private"
+  }
 }
 
 resource "aws_route_table_association" "private" {
