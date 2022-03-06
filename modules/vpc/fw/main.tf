@@ -34,7 +34,7 @@ resource "aws_route" "private_default_natgw" {
 #  transit_gateway_id     = var.tgw_id
 #}
 
-resource "aws_route" "tgw_default_tgw" {
+resource "aws_route" "tgw_rfc1918_tgw" {
   # if need to bypass FW, can add rfc1918 (more specific) routes to go directly back to TGW
   for_each = var.enable_firewall_inter_vpc ? toset([]) : toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
 
@@ -56,4 +56,13 @@ resource "aws_route" "tgw_default" {
 
   ## Used for AWS Network Firewall integration with VPE Endpoint
   vpc_endpoint_id = var.tgw_default_route_fw_vpc_endpoint == null ? null : var.tgw_default_route_fw_vpc_endpoint.endpoint_id
+}
+
+resource "aws_route" "private_rfc1918_tgw" {
+  for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
+
+  route_table_id = module.base_vpc.route_tables.private.id
+
+  destination_cidr_block = each.value
+  transit_gateway_id     = var.tgw_id
 }
