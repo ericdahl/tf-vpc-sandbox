@@ -1,7 +1,7 @@
 resource "aws_instance" "jumphost" {
   ami           = data.aws_ssm_parameter.amazon_linux_2.value
   instance_type = "t3a.nano"
-  subnet_id     = aws_subnet.public["us-east-1a"].id
+  subnet_id     = aws_subnet.public[var.ec2_jumphost_az].id
 
   vpc_security_group_ids = [
     aws_security_group.jumphost.id

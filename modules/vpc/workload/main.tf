@@ -6,6 +6,13 @@ module "base_vpc" {
   cidr_block    = var.cidr_block
   public_key    = var.public_key
   tgw_id        = var.tgw_id
+
+  availability_zones = var.availability_zones
+  ec2_jumphost_az = var.ec2_jumphost_az
+  ec2_internal_az = var.ec2_internal_az
+
+  tgw_default_route_association = var.tgw_default_route_association
+  tgw_default_route_propagation = var.tgw_default_route_propagation
 }
 
 resource "aws_route" "private_default_tgw" {

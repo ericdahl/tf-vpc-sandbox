@@ -13,6 +13,8 @@ A sandbox testing out various VPC configurations
   - centralized firewall appliance for east-west cross-VPC traffic
 - [Transit Gateway Centralized East-West Network Firewall](transit-gateway-centralized-east-west-net-fw)
   - AWS Network Firewall inspecting east-west VPC traffic in TGW
+- [Transit Gateway AZ alignment tests](transit-gateway-az-align)
+  - testing conditions where VPCs may not have all AZes aligned
   
 
 # Misc notes

@@ -1,7 +1,7 @@
 resource "aws_subnet" "private" {
   vpc_id = aws_vpc.default.id
 
-  for_each = zipmap(slice(data.aws_availability_zones.default.names, 0, 3), local.private_subnet_cidrs)
+  for_each = zipmap(var.availability_zones, local.private_subnet_cidrs)
 
   availability_zone = each.key
 
