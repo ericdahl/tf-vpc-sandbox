@@ -3,7 +3,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Name = "transit-gateway-centralized-east-west-net-fw"
+      Name = "transit-gateway-transition"
     }
   }
 }
@@ -12,101 +12,58 @@ data "aws_ssm_parameter" "amazon_linux_2" {
   name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
 }
 
-data "aws_ami" "pfsense" {
-  owners = ["aws-marketplace"]
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-
-  filter {
-    name   = "product-code"
-    values = ["cphb99lr7icr3n9x6kc3102s5"]
-  }
-
-  filter {
-    name   = "name"
-    values = ["pfSense-plus-ec2-21.05.1-RELEASE-amd64*"]
-  }
-}
-
-data "aws_ami" "freebsd" {
-  owners = [
-    782442783595
-  ]
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  filter {
-    name   = "name"
-    values = ["FreeBSD 13.0-RELEASE-amd64"]
-  }
-
-  most_recent = true
-}
 
 resource "aws_key_pair" "default" {
   public_key = var.public_key
 }
 
-resource "aws_cloudwatch_log_group" "vpc_flow_log" {
-  name = "transit-gateway-centralized-east-west-fw-flow-log"
+
+module "vpc_workload" {
+  source = "../modules/vpc/workload"
+
+  for_each = toset([
+    "10.1.0.0/16",
+    "10.2.0.0/16",
+  ])
+  cidr_block = each.value
+  tgw_id     = aws_ec2_transit_gateway.legacy.id
+
+  admin_ip_cidr = var.admin_ip_cidr
+  public_key    = var.public_key
+
+  tgw_default_route_association = true
 }
 
-resource "aws_iam_role" "vpc_flow_log" {
-  name = "vpc-flow-log"
+module "vpc_workload_new_only" {
+  source = "../modules/vpc/workload"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "vpc-flow-logs.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
+  for_each = toset([
+    "10.11.0.0/16",
+    "10.22.0.0/16",
+  ])
+  cidr_block = each.value
+  tgw_id     = aws_ec2_transit_gateway.new.id
+
+  admin_ip_cidr = var.admin_ip_cidr
+  public_key    = var.public_key
+
+  tgw_default_route_association = true
 }
 
-resource "aws_iam_role_policy" "vpc_flow_log" {
-  name = "vpc-flow-log"
-  role = aws_iam_role.vpc_flow_log.id
+resource "aws_ec2_transit_gateway_vpc_attachment" "vpc_10_1_0_0_new" {
+  subnet_ids         = [ for s in module.vpc_workload["10.1.0.0/16"].subnets.tgw: s.id ]
+  transit_gateway_id = aws_ec2_transit_gateway.new.id
+  vpc_id             = module.vpc_workload["10.1.0.0/16"].vpc.id
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
+  transit_gateway_default_route_table_association = true
+  transit_gateway_default_route_table_propagation = true
 }
-EOF
+
+# WARNING: hard-coded route table ID
+resource "aws_route" "migrate" {
+  route_table_id = module.vpc_workload["10.1.0.0/16"].route_tables.public.id
+
+  destination_cidr_block = module.vpc_workload_new_only["10.11.0.0/16"].vpc.cidr_block
+
+  transit_gateway_id = aws_ec2_transit_gateway.new.id
 }

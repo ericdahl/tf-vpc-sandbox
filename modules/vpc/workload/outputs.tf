@@ -17,3 +17,7 @@ output "subnets" {
 output "vpc" {
   value = module.base_vpc.vpc
 }
+
+output "route_tables" {
+  value = module.base_vpc.route_tables
+}
