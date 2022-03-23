@@ -9,6 +9,12 @@ resource "aws_instance" "jumphost" {
 
   key_name = aws_key_pair.default.key_name
 
+  user_data = <<EOF
+#cloud-config
+packages:
+  - nc
+EOF
+
   tags = {
     Name = "${var.cidr_block}-jumphost"
   }
