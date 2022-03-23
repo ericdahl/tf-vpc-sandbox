@@ -29,6 +29,12 @@ resource "aws_networkfirewall_firewall_policy" "default" {
     stateful_rule_group_reference {
       resource_arn = aws_networkfirewall_rule_group.block_2222.arn
     }
+
+    stateful_rule_group_reference {
+      resource_arn = aws_networkfirewall_rule_group.block_external_tgw_ingress.arn
+    }
+
+
   }
 }
 
