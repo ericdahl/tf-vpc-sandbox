@@ -45,3 +45,4 @@ satisfying.
 
 - cross-region TGW
 - VPN TGW Attachment
+- network firewall with ingress filtering, using IGW routes
