@@ -34,3 +34,12 @@ resource "aws_route" "fw_default_nat_gw" {
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id = aws_nat_gateway.nat_gw.id
 }
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = aws_vpc.default.id
+  service_name = "com.amazonaws.us-east-1.s3"
+
+  route_table_ids = [
+    aws_route_table.fw.id
+  ]
+}
