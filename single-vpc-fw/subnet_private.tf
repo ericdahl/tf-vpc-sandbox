@@ -33,5 +33,5 @@ resource "aws_route" "private_default_fw" {
 
   destination_cidr_block = "0.0.0.0/0"
 
-  network_interface_id = aws_instance.fw.primary_network_interface_id
+  network_interface_id = aws_network_interface.fw_lan.id
 }

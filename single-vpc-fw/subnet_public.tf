@@ -34,3 +34,18 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
   subnet_id      = each.value.id
 }
+
+
+#resource "aws_route" "igw_public" {
+#  for_each = aws_subnet.public
+#
+#  route_table_id = aws_route_table.igw.id
+#
+#  destination_cidr_block = each.value.cidr_block
+#  instance_id = aws_instance.fw.id
+#}
+
+resource "aws_route_table_association" "igw" {
+  route_table_id = aws_route_table.igw.id
+  gateway_id = aws_internet_gateway.default.id
+}

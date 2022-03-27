@@ -1,3 +1,22 @@
+resource "aws_flow_log" "default" {
+  vpc_id       = aws_vpc.default.id
+  traffic_type = "ALL"
+
+  log_destination = aws_cloudwatch_log_group.vpc_flow_log.arn
+  iam_role_arn    = aws_iam_role.vpc_flow_log.arn
+
+  # default
+  # log_format = "${version} ${account-id} ${interface-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${packets} ${bytes} ${start} ${end} ${action} ${log-status}"
+
+  max_aggregation_interval = 60
+#  log_format = "$${interface-id} $${pkt-srcaddr} ( $${srcaddr} ) => $${pkt-dstaddr} ( $${dstaddr} ) proto=$${protocol} bytes=$${bytes} start=$${start}"
+#  log_format = "$${interface-id}  $${pkt-srcaddr}  $${srcaddr} "
+
+  #  log_format = "interface-id start srcaddr pkt-srcaddr => dstaddr pkt-dstaddr flow-direction protocol"
+  log_format = "$${interface-id} $${pkt-srcaddr} $${srcaddr} $${flow-direction} $${bytes} $${dstaddr} $${pkt-dstaddr} $${end} $${packets} $${protocol} $${start} $${type}"
+}
+
+
 resource "aws_cloudwatch_log_group" "vpc_flow_log" {
   name = "vpc-flow-log-${aws_vpc.default.cidr_block}"
 }
