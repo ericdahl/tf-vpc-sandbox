@@ -15,6 +15,8 @@ packages:
   - nc
 EOF
 
+  iam_instance_profile = aws_iam_instance_profile.ssm.name
+
   tags = {
     Name = "${var.cidr_block}-internal"
   }

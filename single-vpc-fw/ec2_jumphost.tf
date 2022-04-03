@@ -9,6 +9,8 @@ resource "aws_instance" "jumphost" {
 
   key_name = aws_key_pair.default.key_name
 
+  iam_instance_profile = aws_iam_instance_profile.ssm.name
+
   user_data = <<EOF
 #cloud-config
 packages:
