@@ -66,3 +66,17 @@ resource "aws_route" "private_rfc1918_tgw" {
   destination_cidr_block = each.value
   transit_gateway_id     = var.tgw_id
 }
+
+resource "aws_route" "public_rfc_1918_fw" {
+  for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
+
+  route_table_id = module.base_vpc.route_tables.public.id
+
+  destination_cidr_block = each.value
+
+  # Used for EC2 based firewalls, without VPC Endpoint
+  network_interface_id = var.tgw_default_route_fw_eni == null ? null : var.tgw_default_route_fw_eni.id
+
+  ## Used for AWS Network Firewall integration with VPE Endpoint
+  vpc_endpoint_id = var.tgw_default_route_fw_vpc_endpoint == null ? null : var.tgw_default_route_fw_vpc_endpoint.endpoint_id
+}

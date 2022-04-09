@@ -28,14 +28,7 @@ resource "aws_route" "public" {
   gateway_id             = aws_internet_gateway.default.id
 }
 
-resource "aws_route" "public_rfc_1918_tgw" {
-  for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
 
-  route_table_id = aws_route_table.public.id
-
-  destination_cidr_block = each.value
-  transit_gateway_id     = aws_ec2_transit_gateway_vpc_attachment.default.transit_gateway_id
-}
 
 resource "aws_route_table_association" "public" {
   for_each = aws_subnet.public

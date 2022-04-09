@@ -28,3 +28,12 @@ resource "aws_route" "tgw_default_tgw" {
   destination_cidr_block = "0.0.0.0/0"
   transit_gateway_id     = module.base_vpc.tgw_attachment.transit_gateway_id
 }
+
+resource "aws_route" "public_rfc_1918_tgw" {
+  for_each = toset(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
+
+  route_table_id = module.base_vpc.route_tables.public.id
+
+  destination_cidr_block = each.value
+  transit_gateway_id     = module.base_vpc.tgw_attachment.transit_gateway_id
+}
