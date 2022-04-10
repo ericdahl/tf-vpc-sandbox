@@ -60,5 +60,14 @@ module "vpc_fw" {
   admin_ip_cidr = var.admin_ip_cidr
   public_key    = var.public_key
 
-  tgw_default_route_fw_vpc_endpoint =  tolist(aws_networkfirewall_firewall.default.firewall_status[0].sync_states)[0].attachment[0]
+  tgw_default_route_fw_vpc_endpoint =  module.net_fw.vpc_endpoints
+}
+
+module "net_fw" {
+  source = "../modules/net-fw"
+
+  vpc_id = module.vpc_fw.vpc.id
+  subnet_ids = [
+    module.vpc_fw.subnets.private["us-east-1a"].id
+  ]
 }
