@@ -88,3 +88,40 @@ The destination CIDR block 10.1.102.0/24 is equal to or more specific than one o
 ## Network Firewall
             
 - HOME_NET is VPC FW CIDR; generally not appropriate. Need to set to RFC 1918
+
+### Example Log - default drop
+
+```json
+{
+    "firewall_name": "transit-gateway-centralized-east-west-net-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1649620611",
+    "event": {
+        "timestamp": "2022-04-10T19:56:51.558394+0000",
+        "flow_id": 712183795996134,
+        "event_type": "alert",
+        "src_ip": "10.1.128.133",
+        "src_port": 39582,
+        "dest_ip": "34.231.5.222",
+        "dest_port": 80,
+        "proto": "TCP",
+        "alert": {
+            "action": "blocked",
+            "signature_id": 4,
+            "rev": 0,
+            "signature": "aws:alert_established action",
+            "category": "",
+            "severity": 3
+        },
+        "http": {
+            "hostname": "httpbin.org",
+            "url": "/ip",
+            "http_user_agent": "curl/7.79.1",
+            "http_method": "GET",
+            "protocol": "HTTP/1.1",
+            "length": 0
+        },
+        "app_proto": "http"
+    }
+}
+```

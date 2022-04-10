@@ -24,7 +24,7 @@ EOF
 
 resource "aws_security_group" "internal" {
   vpc_id = aws_vpc.default.id
-  name   = "internal_10_10_0_0"
+  name   = "internal"
 }
 
 resource "aws_security_group_rule" "internal_egress" {

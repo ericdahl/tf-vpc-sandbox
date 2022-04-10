@@ -24,7 +24,7 @@ EOF
 
 resource "aws_security_group" "jumphost" {
   vpc_id = aws_vpc.default.id
-  name   = "jumphost_10_10_0_0"
+  name   = "jumphost"
 }
 
 resource "aws_security_group_rule" "jumphost_egress" {

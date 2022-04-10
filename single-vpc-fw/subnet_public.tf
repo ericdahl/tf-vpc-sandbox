@@ -45,7 +45,7 @@ resource "aws_route_table_association" "public" {
 #  instance_id = aws_instance.fw.id
 #}
 
-resource "aws_route_table_association" "igw" {
-  route_table_id = aws_route_table.igw.id
-  gateway_id = aws_internet_gateway.default.id
-}
+#resource "aws_route_table_association" "igw" {
+#  route_table_id = aws_route_table.igw.id
+#  gateway_id = aws_internet_gateway.default.id
+#}

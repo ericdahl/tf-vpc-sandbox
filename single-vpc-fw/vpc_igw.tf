@@ -16,5 +16,5 @@ resource "aws_route" "igw_default" {
   route_table_id = aws_route_table.igw.id
 
   destination_cidr_block = each.value.cidr_block
-  network_interface_id = aws_network_interface.fw_lan.id
+  network_interface_id = aws_instance.fw.primary_network_interface_id
 }
