@@ -11,18 +11,26 @@ resource "aws_networkfirewall_rule_group" "stateful_strict_low_priority" {
       rule_order = "STRICT_ORDER"
     }
 
+    rule_variables {
+
+      ip_sets {
+        key = "RFC_1918"
+        ip_set {
+          definition = local.cidrs_rfc_1918
+        }
+      }
+    }
+
     rules_source {
 
     rules_string = <<EOF
 
 
-#drop http 10.1.128.40 any -> any any (msg: "alert one host"; sid: 5;)
+pass http $RFC_1918 any -> $EXTERNAL_NET 80 (http.host; dotprefix; content:".example.com"; endswith; msg:"Allowed HTTP domain"; sid:892120; rev:1;)
+pass tcp $RFC_1918 any <> $EXTERNAL_NET 80 (flow:not_established; sid:892191; rev:1;)
 
-#pass ip any any -> any any (msg: "allow everything"; sid: 6;)
 
-pass http $HOME_NET any -> $EXTERNAL_NET 80 (http.host; dotprefix; content:".example.com"; endswith; msg:"Allowed HTTP domain"; sid:892120; rev:1;)
-pass tcp $HOME_NET any <> $EXTERNAL_NET 80 (flow:not_established; sid:892191; rev:1;)
-
+alert http any any -> any 80 (msg: "alert all http port 80"; sid: 1234;)
 
 EOF
 

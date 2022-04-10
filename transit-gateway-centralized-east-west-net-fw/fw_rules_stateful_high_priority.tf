@@ -13,21 +13,10 @@ resource "aws_networkfirewall_rule_group" "stateful_strict_high_priority" {
 
     rules_source {
 
+      rules_string = <<EOF
+# nothing
+EOF
 
-      stateful_rule {
-        action = "DROP"
-        header {
-          destination      = "0.0.0.0/0"
-          destination_port = 2222
-          direction        = "ANY"
-          protocol         = "TCP"
-          source           = "10.0.0.0/8"
-          source_port      = "ANY"
-        }
-        rule_option {
-          keyword = "sid:1"
-        }
-      }
     }
   }
 }
