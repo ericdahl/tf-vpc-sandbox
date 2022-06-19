@@ -35,8 +35,6 @@ module "vpc_dev" {
 
   admin_ip_cidr = var.admin_ip_cidr
   public_key    = var.public_key
-
-  instance_type = "c5n.large"
 }
 
 module "vpc_stage" {
