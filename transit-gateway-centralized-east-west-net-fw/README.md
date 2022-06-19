@@ -85,6 +85,18 @@ The destination CIDR block 10.1.102.0/24 is equal to or more specific than one o
             - missing route: okay
             - add rfc1918 routes to tgw: results in "redirect host nexthop 0.0.0.0"
 
+
+## performance
+
+- iperf3
+- instances are c5n.large
+- Test 1: loopback interface
+  - 73 Gbps / 9 GBps
+- Test 2: across TGW/FW, same AZ
+  - 4.7 Gbps / 0.5
+- Test 3: same VPC, same AZ, placement group
+  - 9.5 Gpbs / 1.2 GPbs
+
 ## Network Firewall
             
 - HOME_NET is VPC FW CIDR; generally not appropriate. Need to set to RFC 1918

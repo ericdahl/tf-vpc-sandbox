@@ -25,3 +25,7 @@ variable "tgw_default_route_association" {
 variable "tgw_default_route_propagation" {
   default = true
 }
+
+variable "instance_type" {
+  default = "t3a.nano"
+}

@@ -37,6 +37,10 @@ pass http $RFC_1918 any -> !$RFC_1918 80 (http.host; dotprefix; content:".exampl
 pass tls $RFC_1918 any -> !$RFC_1918 any (tls.sni; dotprefix; content:".amazon.com"; nocase; endswith; msg:"matching TLS allowlisted FQDNs"; flow:to_server, established; sid:4; rev:1;)
 pass tls $RFC_1918 any -> !$RFC_1918 any (tls.sni; content:"httpbin.org"; startswith; nocase; endswith; msg:"matching TLS allowlisted FQDNs"; flow:to_server, established; sid:5; rev:1;)
 
+# temporary? could refine to just allow for yum updates..?
+pass tls any any -> any any (msg: "allow all tls"; sid:6;)
+
+pass tcp any any -> any 5201 (msg: "allow iperf3 testing"; sid:7;)
 
 # log anything that did not pass/drop yet
 #alert http any any -> any 80 (msg: "alert all http port 80"; sid: 7;)

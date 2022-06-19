@@ -22,3 +22,7 @@ variable "ec2_internal_az" {
 variable "ec2_jumphost_az" {
   default = "us-east-1a"
 }
+
+variable "instance_type" {
+  default = "t3a.nano"
+}

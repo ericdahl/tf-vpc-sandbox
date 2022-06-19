@@ -1,6 +1,6 @@
 resource "aws_instance" "internal" {
   ami           = data.aws_ssm_parameter.amazon_linux_2.value
-  instance_type = "t3a.nano"
+  instance_type = var.instance_type
   subnet_id     = aws_subnet.private[var.ec2_internal_az].id
 
   vpc_security_group_ids = [

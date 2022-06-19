@@ -11,6 +11,8 @@ module "base_vpc" {
   ec2_jumphost_az = var.ec2_jumphost_az
   ec2_internal_az = var.ec2_internal_az
 
+  instance_type = var.instance_type
+
   tgw_default_route_association = var.tgw_default_route_association
   tgw_default_route_propagation = var.tgw_default_route_propagation
 }

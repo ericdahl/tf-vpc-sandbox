@@ -35,6 +35,8 @@ module "vpc_dev" {
 
   admin_ip_cidr = var.admin_ip_cidr
   public_key    = var.public_key
+
+  instance_type = "c5n.large"
 }
 
 module "vpc_stage" {
@@ -60,7 +62,7 @@ module "vpc_fw" {
   admin_ip_cidr = var.admin_ip_cidr
   public_key    = var.public_key
 
-  tgw_default_route_fw_vpc_endpoint =  module.net_fw.vpc_endpoints
+  tgw_default_route_fw_vpc_endpoint = module.net_fw.vpc_endpoints
 }
 
 module "net_fw" {
