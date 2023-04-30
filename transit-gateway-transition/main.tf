@@ -51,7 +51,7 @@ module "vpc_workload_new_only" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "vpc_10_1_0_0_new" {
-  subnet_ids         = [ for s in module.vpc_workload["10.1.0.0/16"].subnets.tgw: s.id ]
+  subnet_ids         = [for s in module.vpc_workload["10.1.0.0/16"].subnets.tgw : s.id]
   transit_gateway_id = aws_ec2_transit_gateway.new.id
   vpc_id             = module.vpc_workload["10.1.0.0/16"].vpc.id
 
@@ -59,11 +59,15 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "vpc_10_1_0_0_new" {
   transit_gateway_default_route_table_propagation = true
 }
 
-# WARNING: hard-coded route table ID
-resource "aws_route" "migrate" {
-  route_table_id = module.vpc_workload["10.1.0.0/16"].route_tables.public.id
-
-  destination_cidr_block = module.vpc_workload_new_only["10.11.0.0/16"].vpc.cidr_block
-
-  transit_gateway_id = aws_ec2_transit_gateway.new.id
-}
+# Uncomment to migrate to TGW-New
+#resource "aws_route" "migrate" {
+#  route_table_id         = module.vpc_workload["10.1.0.0/16"].route_tables.public.id
+#  destination_cidr_block = module.vpc_workload_new_only["10.11.0.0/16"].vpc.cidr_block
+#  transit_gateway_id     = aws_ec2_transit_gateway.new.id
+#}
+#
+#resource "aws_route" "migrate_private" {
+#  route_table_id         = module.vpc_workload["10.1.0.0/16"].route_tables.private.id
+#  destination_cidr_block = module.vpc_workload_new_only["10.11.0.0/16"].vpc.cidr_block
+#  transit_gateway_id     = aws_ec2_transit_gateway.new.id
+#}

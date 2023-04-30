@@ -49,3 +49,20 @@ CW metrics still showing only New-TGW after 15 minutes
 Bug? how can overall TGW metric show no activity while TGW-A within TGW show activity
 - CW Metric for Per-TGW for Legacy-TGW showing _no data_
 - CW Metric for Per-TGW-TGWA for Legacy-TGW showing data
+
+### Migration Path Review
+
+10.1 internal src -> 10.11 internal dest
+
+1. 10.1 internal
+2. 10.1 VPC subnet route to TGW-New
+3. TGW-New association in place to single table
+4. TGW-New route to 10.11 VPC
+5. 10.11 VPC TGW-A route to local VPC
+6. 10.11 instance receives ECHO
+7. 10.11 sends ECHO REPLY
+8. subnet routes to TGW-New (default route)
+9. TGW-New association in place to single table
+10. TGW-New routes to 10.1 VPC (propagated route)
+11. 10.1 VPC TGW-A route to local VPC
+12. 10.1 instance receives ECHO REPLY
