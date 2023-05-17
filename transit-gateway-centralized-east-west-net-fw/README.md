@@ -97,6 +97,55 @@ The destination CIDR block 10.1.102.0/24 is equal to or more specific than one o
 - Test 3: same VPC, same AZ, placement group
   - 9.5 Gpbs / 1.2 GPbs
 
+## Bypass FW for certain egresses
+
+e.g., to reduce costs for Net FW for some particular trusted partners
+
+### Hacky path - static route override
+
+- Change
+    - Update FW VPC -> TGW Route Table
+        - add static route to NAT GW (skipping VPCE/FW)
+    - (return traffic) Update FW VPC -> Public Route Table
+        - add static route to private instance (skipping VPCE/FW)
+        - _not_ sustainable for multiple hosts, IPs
+        - leads to "dangling" half connections in FW for any other egress route
+            - outgoing packets hit FW, return packets skip FW
+
+### Hack #2 - Network FW
+
+- Add NLB with static IP target going to external partner
+- pros
+    - no "dangling" half connections in FW
+    - static IPs mean routes can be specific
+- cons
+    - more costs
+    - more complexity
+    - client updates
+
+### Hack #3 - Migrate apps to public subnets
+
+- pros
+    - no routing/FW changes
+    - cheapest
+- cons
+    - all egress traffic bypasses FW
+    - requires updating apps
+    - results in dynamic IPs - partners may have IP whitelisting
+
+### Hack #4 - TGW table bypass
+
+- create 2nd TGW-A in FW VPC in 2nd subnet
+    - new subnet route table
+
+### Better #1 - VPC NAT GWs
+
+- create NAT GW in app VPC, route there
+- pros:
+    - no FW costs
+- cons
+    - requires new IPs
+
 ## Network Firewall
             
 - HOME_NET is VPC FW CIDR; generally not appropriate. Need to set to RFC 1918

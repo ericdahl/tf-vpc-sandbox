@@ -71,3 +71,20 @@ module "net_fw" {
     module.vpc_fw.subnets.private["us-east-1a"].id
   ]
 }
+
+
+# Hacky test about bypassign FW for savign money on particular endpoint
+#resource "aws_route" "bypass_fw" {
+#  route_table_id = module.vpc_fw.route_tables.tgw.id
+#
+#  destination_cidr_block = "93.184.216.34/32" # example.com
+#  nat_gateway_id = module.vpc_fw.nat_gw.id
+#}
+#
+#resource "aws_route" "bypass_fw_return" {
+#
+#  route_table_id = module.vpc_fw.route_tables.public.id
+#
+#  destination_cidr_block = "${module.vpc_dev["10.1.0.0/16"].ec2_internal.private_ip}/32"
+#  transit_gateway_id =  aws_ec2_transit_gateway.default.id
+#}

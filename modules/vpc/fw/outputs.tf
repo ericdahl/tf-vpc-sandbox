@@ -17,3 +17,15 @@ output "ec2_internal" {
 output "vpc" {
   value = module.base_vpc.vpc
 }
+
+output "route_tables" {
+  value = {
+    public  = module.base_vpc.route_tables.public
+    private = module.base_vpc.route_tables.private
+    tgw     = module.base_vpc.route_tables.tgw
+  }
+}
+
+output "nat_gw" {
+  value = aws_nat_gateway.fw
+}
