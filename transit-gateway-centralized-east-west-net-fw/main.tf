@@ -73,14 +73,14 @@ module "net_fw" {
 }
 
 
-# Hacky test about bypassign FW for savign money on particular endpoint
+# Hacky test about bypassing FW for saving money on particular endpoint
 #resource "aws_route" "bypass_fw" {
 #  route_table_id = module.vpc_fw.route_tables.tgw.id
 #
 #  destination_cidr_block = "93.184.216.34/32" # example.com
 #  nat_gateway_id = module.vpc_fw.nat_gw.id
 #}
-#
+##
 #resource "aws_route" "bypass_fw_return" {
 #
 #  route_table_id = module.vpc_fw.route_tables.public.id
