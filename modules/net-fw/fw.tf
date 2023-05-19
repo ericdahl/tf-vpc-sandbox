@@ -25,10 +25,10 @@ resource "aws_networkfirewall_firewall_policy" "strict" {
       rule_order = "STRICT_ORDER"
     }
 
-#    stateless_rule_group_reference {
-#      priority     = 2
-#      resource_arn = aws_networkfirewall_rule_group.stateless_block_egress_80.arn
-#    }
+    stateless_rule_group_reference {
+      priority     = 2
+      resource_arn = aws_networkfirewall_rule_group.stateless.arn
+    }
 
 
 
