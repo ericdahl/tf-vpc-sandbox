@@ -109,6 +109,10 @@ e.g., to reduce costs for Net FW for some particular trusted partners
     - (return traffic) Update FW VPC -> Public Route Table
         - add static route to private instance (skipping VPCE/FW)
         - _not_ sustainable for multiple hosts, IPs
+          - any other instance connecting to endpoint will then fail
+            - forward path skips FW; return path hits FW for those other instances
+        - workaround for hack
+          - add static route for entire network
         - leads to "dangling" half connections in FW for any other egress route
             - outgoing packets hit FW, return packets skip FW
 
