@@ -40,7 +40,11 @@ pass tls $RFC_1918 any -> !$RFC_1918 any (tls.sni; content:"httpbin.org"; starts
 # temporary? could refine to just allow for yum updates..?
 pass tls any any -> any any (msg: "allow all tls"; sid:6;)
 
+
 pass tcp any any -> any 5201 (msg: "allow iperf3 testing"; sid:7;)
+
+
+pass ip $RFC_1918 any -> any any (msg: "allow all egress temp"; sid: 8;)
 
 # log anything that did not pass/drop yet
 #alert http any any -> any 80 (msg: "alert all http port 80"; sid: 7;)

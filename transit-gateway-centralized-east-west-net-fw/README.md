@@ -104,17 +104,38 @@ e.g., to reduce costs for Net FW for some particular trusted partners
 ### Hacky path - static route override
 
 - Change
-    - Update FW VPC -> TGW Route Table
-        - add static route to NAT GW (skipping VPCE/FW)
+    - (forward traffic) Update FW VPC:  TGW Route Table
+        - add static route for partner IP to NAT GW (skipping VPCE/FW route)
     - (return traffic) Update FW VPC -> Public Route Table
         - add static route to private instance (skipping VPCE/FW)
-        - _not_ sustainable for multiple hosts, IPs
-          - any other instance connecting to endpoint will then fail
-            - forward path skips FW; return path hits FW for those other instances
-        - workaround for hack
-          - add static route for entire network
-        - leads to "dangling" half connections in FW for any other egress route
-            - outgoing packets hit FW, return packets skip FW
+        - 
+#### Issues/Risks
+
+##### Issue 1 - asymmetric route for any other workloads connecting to partner
+- forwards bypassing FW
+- returns hitting FW
+- effect: 
+  - success, for particular client IPs configured in return route
+  - failure, for connections to Partner for any other client IPs not in return route
+    - net FW asymmetric route leads to default drop as forward path not seen
+- workaround
+  - add stateless rule to pass any traffic from partner
+    - effect:
+      - for other client IPs:
+        - *failure* for connections to partner (why?)
+          - even if stateless rule permitting ANY to ANY is added, still fails
+          - tcpdump shows client sending SYNs but no SYN-ACKs
+        - success (no change) for other connections
+          
+##### Issue 2 - asymmetric route for client egress to any other internet IP
+
+- forwards hitting FW
+- returns bypassing FW
+- note: no stateless rule workaround in place yet
+- effect:
+  - success, for client IP to Partner
+  - success, for client IP to non-Partner IPs
+    - does it confuse FW somehow, never seeing SYN-ACKs, recording new connections?
 
 ### Hack #2 - Network FW
 
