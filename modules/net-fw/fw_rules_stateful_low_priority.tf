@@ -25,10 +25,10 @@ resource "aws_networkfirewall_rule_group" "stateful_strict_low_priority" {
 
     rules_string = <<EOF
 
-pass icmp $RFC_1918 any -> any any (msg: "allow all rfc1918 icmp"; sid: 1;)
-
-# example - drop requests from "bad_user" HTTP User Agent
-drop http $RFC_1918 any -> any any (content: "bad_user"; http_user_agent; sid: 2; rev: 1;)
+# testing content inspection (not yet working..)
+drop tcp 10.1.0.0/16 any -> 10.2.0.0/16 1111 (msg: "drop 1"; flow:established,to_server;content:"i"; sid: 1000;)
+#drop tcp 10.1.0.0/16 any -> 10.2.0.0/16 1111 (msg: "drop 1"; content:"i"; sid: 1000;)
+pass tcp 10.1.0.0/16 any -> 10.2.0.0/16 1111 (msg: "pass 1"; sid: 1001;)
 
 # allow http to example.com domain
 pass http $RFC_1918 any -> !$RFC_1918 80 (http.host; dotprefix; content:".example.com"; endswith; msg:"Allowed HTTP domain"; sid:3; rev:1;)
