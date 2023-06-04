@@ -24,11 +24,11 @@ resource "aws_networkfirewall_firewall_policy" "strict" {
     stateful_engine_options {
       rule_order = "STRICT_ORDER"
     }
-
-    stateless_rule_group_reference {
-      priority     = 2
-      resource_arn = aws_networkfirewall_rule_group.stateless.arn
-    }
+#
+#    stateless_rule_group_reference {
+#      priority     = 2
+#      resource_arn = aws_networkfirewall_rule_group.stateless.arn
+#    }
 
 
 
@@ -36,26 +36,26 @@ resource "aws_networkfirewall_firewall_policy" "strict" {
       priority = 100
       resource_arn = aws_networkfirewall_rule_group.stateful_strict_high_priority.arn
     }
-
-    stateful_rule_group_reference {
-      priority = 200
-      resource_arn = "arn:aws:network-firewall:us-east-1:aws-managed:stateful-rulegroup/BotNetCommandAndControlDomainsStrictOrder"
-    }
-
-    stateful_rule_group_reference {
-      priority = 300
-      resource_arn = "arn:aws:network-firewall:us-east-1:aws-managed:stateful-rulegroup/MalwareDomainsStrictOrder"
-    }
-
-    stateful_rule_group_reference {
-      priority = 400
-      resource_arn = "arn:aws:network-firewall:us-east-1:aws-managed:stateful-rulegroup/AbusedLegitMalwareDomainsStrictOrder"
-    }
-
-    stateful_rule_group_reference {
-      priority = 500
-      resource_arn = "arn:aws:network-firewall:us-east-1:aws-managed:stateful-rulegroup/AbusedLegitBotNetCommandAndControlDomainsStrictOrder"
-    }
+#
+#    stateful_rule_group_reference {
+#      priority = 200
+#      resource_arn = "arn:aws:network-firewall:us-east-1:aws-managed:stateful-rulegroup/BotNetCommandAndControlDomainsStrictOrder"
+#    }
+#
+#    stateful_rule_group_reference {
+#      priority = 300
+#      resource_arn = "arn:aws:network-firewall:us-east-1:aws-managed:stateful-rulegroup/MalwareDomainsStrictOrder"
+#    }
+#
+#    stateful_rule_group_reference {
+#      priority = 400
+#      resource_arn = "arn:aws:network-firewall:us-east-1:aws-managed:stateful-rulegroup/AbusedLegitMalwareDomainsStrictOrder"
+#    }
+#
+#    stateful_rule_group_reference {
+#      priority = 500
+#      resource_arn = "arn:aws:network-firewall:us-east-1:aws-managed:stateful-rulegroup/AbusedLegitBotNetCommandAndControlDomainsStrictOrder"
+#    }
 
     stateful_rule_group_reference {
       priority = 50000
