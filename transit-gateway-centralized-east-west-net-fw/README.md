@@ -97,6 +97,37 @@ The destination CIDR block 10.1.102.0/24 is equal to or more specific than one o
 - Test 3: same VPC, same AZ, placement group
   - 9.5 Gpbs / 1.2 GPbs
 
+## Suricata rule example/test for IPS
+
+Goal: block "malicious" traffic detected at L7 even if connection was established
+(no malware initially)
+
+```
+# make 11 curl requests on same TCP connection
+curl --max-time 5 -v http://10.2.128.210/?[1230-1240]
+```
+
+### Invalid config
+
+```
+# Note: misconfigured - does not block 1234 if connection established already
+drop http any any -> any 80 (flow:established,to_server;content: "1234"; sid: 1;)
+pass http any any -> any 80 (sid: 2;)
+```
+
+### Correct config
+
+```
+# Fix for above, drops 1234 request in middle of flow, curl creates new conn/flow
+drop http any any -> any 80 (flow:established,to_server;content: "1234"; sid: 1;)
+pass tcp any any -> any 80 (flow:established,to_server;sid: 2;)
+```
+
+#### Notes
+
+- swap tcp -> http: doesn't work
+- remove 2 criteria from pass: doesn't work
+
 ## Bypass FW for certain egresses
 
 e.g., to reduce costs for Net FW for some particular trusted partners
