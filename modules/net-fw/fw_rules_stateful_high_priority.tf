@@ -36,6 +36,15 @@ pass tcp any any -> any 80 (flow:established,to_server;sid: 2;)
 #drop http any any -> any 80 (flow:established,to_server;content: "foobar"; sid: 1231;)
 #pass http any any -> any 80 (sid: 1221111;)
 
+#block tls 10.0.0.0/8 any -> !10.0.0.0/8 443 (sid: 3;)
+#pass ip 10.0.0.0/8 any -> !10.0.0.0/8 443 (sid: 4;)
+
+# TLS SNI test - block access to httpbin. Note: important that 2nd rule has flow qualifier - otherwise won't work
+#
+drop tls 10.0.0.0/8 any -> any any (tls.sni; content:"httpbin.org"; startswith; nocase; msg:"block access to httpbin"; flow:to_server; sid:3;)
+pass ip 10.0.0.0/8 any -> !10.0.0.0/8 443 (flow:established,to_server; msg: "default allow egress to internet on port 443"; sid: 4;)
+
+
 EOF
 
     }
