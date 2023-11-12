@@ -40,9 +40,10 @@ pass tcp any any -> any 80 (flow:established,to_server;sid: 2;)
 #pass ip 10.0.0.0/8 any -> !10.0.0.0/8 443 (sid: 4;)
 
 # TLS SNI test - block access to httpbin. Note: important that 2nd rule has flow qualifier - otherwise won't work
-#
+# if omitting flow keyword then 2nd rule will allow the connection for the initial unestablished packets, prior
+# to L7 TLS inspection. 2nd rule can be ip/tcp/tls
 drop tls 10.0.0.0/8 any -> any any (tls.sni; content:"httpbin.org"; startswith; nocase; msg:"block access to httpbin"; flow:to_server; sid:3;)
-pass ip 10.0.0.0/8 any -> !10.0.0.0/8 443 (flow:established,to_server; msg: "default allow egress to internet on port 443"; sid: 4;)
+pass tcp 10.0.0.0/8 any -> !10.0.0.0/8 443 (flow:established,to_server; msg: "default allow egress to internet on port 443"; sid: 4;)
 
 
 EOF
