@@ -25,7 +25,9 @@ resource "aws_networkfirewall_rule_group" "stateful_strict_low_priority" {
 
     rules_string = <<EOF
 
-#nothing
+#pass ip $RFC_1918 any -> !$RFC_1918 any (msg: "default allow egress to internet"; sid: 1000001;)
+pass ip $RFC_1918 any -> !$RFC_1918 any (flow:established,to_server; msg: "default allow egress to internet"; sid: 1000001;)
+
 
 EOF
 

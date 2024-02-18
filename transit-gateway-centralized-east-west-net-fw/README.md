@@ -25,6 +25,17 @@ curl: (28) Failed to connect to 10.10.1.115 port 2222: Connection timed out
 
 # Notes
 
+## Default egress rule
+
+- swapping from no flow keywords -> `flow:established,to_server;`
+
+- Tests:
+  - simple cutover_ no issues
+  - cutover during long download: no issues
+  - verify L7 blocking
+    - missing flow keyword: traffic is allowed
+    - add: blocks as expected
+
 ## East-West inspection within VPC
 
 - <https://aws.amazon.com/blogs/aws/inspect-subnet-to-subnet-traffic-with-amazon-vpc-more-specific-routing/>
