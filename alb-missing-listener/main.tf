@@ -18,14 +18,14 @@ resource "aws_security_group" "alb" {
   }
 }
 
-resource "aws_security_group_rule" "alb_http_ingress" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.alb.id
-}
+# resource "aws_security_group_rule" "alb_http_ingress" {
+#   type              = "ingress"
+#   from_port         = 80
+#   to_port           = 80
+#   protocol          = "tcp"
+#   cidr_blocks       = ["0.0.0.0/0"]
+#   security_group_id = aws_security_group.alb.id
+# }
 
 resource "aws_security_group_rule" "alb_https_ingress" {
   type              = "ingress"
@@ -84,27 +84,27 @@ resource "aws_lb_target_group" "main" {
   }
 }
 
-# HTTP Listener (port 80)
-resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.main.arn
-  port              = "80"
-  protocol          = "HTTP"
+# # HTTP Listener (port 80)
+# resource "aws_lb_listener" "http" {
+#   load_balancer_arn = aws_lb.main.arn
+#   port              = "80"
+#   protocol          = "HTTP"
 
-  default_action {
-    type = "redirect"
+#   default_action {
+#     type = "redirect"
 
-    redirect {
-      host        = "example.com"
-      path        = "/#{path}"
-      query       = "#{query}"
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
-  }
+#     redirect {
+#       host        = "example.com"
+#       path        = "/#{path}"
+#       query       = "#{query}"
+#       port        = "443"
+#       protocol    = "HTTPS"
+#       status_code = "HTTP_301"
+#     }
+#   }
 
-  tags = {
-    Name = "alb-http-listener"
-  }
-}
+#   tags = {
+#     Name = "alb-http-listener"
+#   }
+# }
 
