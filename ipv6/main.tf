@@ -21,20 +21,31 @@ resource "aws_vpc" "default" {
 resource "aws_subnet" "default" {
   vpc_id                                         = aws_vpc.default.id
   availability_zone                              = "us-east-1a"
-  ipv6_cidr_block                                = "2600:1f18:28e8:9100::/64"
+  ipv6_cidr_block                                = cidrsubnet(aws_vpc.default.ipv6_cidr_block, 8, 1)
   ipv6_native                                    = true
   assign_ipv6_address_on_creation                = true
   enable_resource_name_dns_aaaa_record_on_launch = true
 }
 
+
+resource "aws_internet_gateway" "default" {
+  vpc_id = aws_vpc.default.id
+}
+
 resource "aws_route_table" "default" {
   vpc_id = aws_vpc.default.id
+
+  route {
+    ipv6_cidr_block = "::/0"
+    gateway_id      = aws_internet_gateway.default.id
+  }
 }
 
 resource "aws_route_table_association" "default" {
   route_table_id = aws_route_table.default.id
   subnet_id      = aws_subnet.default.id
 }
+
 
 data "aws_ssm_parameter" "ecs_amazon_linux_2" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
@@ -102,3 +113,4 @@ resource "aws_security_group_rule" "egress_all_ipv4" {
   cidr_blocks = ["0.0.0.0/0"]
 
 }
+
