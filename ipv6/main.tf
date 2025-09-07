@@ -58,7 +58,14 @@ resource "aws_instance" "default" {
   instance_type = "t3.small"
 
   vpc_security_group_ids = [aws_security_group.default.id]
-  iam_instance_profile   = aws_iam_instance_profile.ec2.name
+
+  user_data = <<-EOF
+    #!/bin/bash
+    dnf update -y
+    dnf install -y nginx
+    systemctl start nginx
+    systemctl enable nginx
+  EOF
 }
 
 resource "aws_security_group" "default" {
@@ -112,5 +119,9 @@ resource "aws_security_group_rule" "egress_all_ipv4" {
 
   cidr_blocks = ["0.0.0.0/0"]
 
+}
+
+output "instance_ipv6_address" {
+  value = aws_instance.default.ipv6_addresses[0]
 }
 
